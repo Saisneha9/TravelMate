@@ -204,7 +204,7 @@ TravelMate
 
 ---
 
-# 🎯 Software Engineering Concepts Demonstrated
+# 🎯 Concepts Demonstrated
 
 - Full-Stack Web Development
 - REST API Development
@@ -218,19 +218,6 @@ TravelMate
 - Git Version Control
 
 ---
-
-# 🚀 Future Enhancements
-
-- AI-powered destination recommendations
-- Google Maps API integration
-- Real-time weather information
-- Hotel booking integration
-- JWT authentication
-- Docker containerization
-- AWS deployment
-- Personalized itinerary generation
-
-
 
 ⭐ *If you found this project useful, consider giving it a star!*
 
