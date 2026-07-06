@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Live SOS Location</title>
+  <style>
+    :root {
+      --primary: #f9d71c;
+      --accent: #ffeb3b;
+      --bg: #fffef4;
+      --danger: #ff4b2b;
+      --text: #333;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: var(--bg);
+      margin: 0;
+      padding: 0px;
+      color: var(--text);
+      transition: background 0.5s ease;
+      background-color: whitesmoke;
+    }
+
+    h1, h2 {
+      text-align: center;
+      color: #111;
+      border: 50px;
+      border-radius: 5px;
+      background-color: rgba(242, 247, 0, 0.911);
+    }
+
+    button {
+      display: block;
+      margin: 20px auto;
+      padding: 12px 24px;
+      font-weight: bold;
+      background: var(--danger);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: transform 0.2s ease, background 0.3s ease;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    button:hover {
+      background: #ff1a00;
+      transform: scale(1.05);
+    }
+
+    .location-box {
+      background: var(--accent);
+      padding: 20px;
+      border-left: 5px solid var(--danger);
+      box-shadow: 0 4px 10px rgba(242, 247, 0, 0.911);
+      margin: 20px auto;
+      width: 90%;
+      max-width: 500px;
+      border-radius: 10px;
+      transition: transform 0.3s ease;
+    }
+
+    .location-box.animated {
+      animation: pop 0.6s ease;
+    }
+
+    @keyframes pop {
+      0% { transform: scale(0.9); opacity: 0.7; }
+      50% { transform: scale(1.05); opacity: 1; }
+      100% { transform: scale(1); }
+    }
+
+    #map {
+      height: 400px;
+      width: 100%;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 10px rgba(242, 247, 0, 0.911);;
+      margin-top: 20px;
+    }
+    .nav {
+            display: flex;
+            justify-content: center;
+            background: #ff9900;
+            padding: 10px;
+            box-shadow: 2px 2px 2px 2px#f8f8f8;
+        }
+
+        .nav a {
+            margin: 0 15px;
+            color: rgb(255, 81, 0);
+            text-decoration: none;
+            font-size: 18px;
+            background-color: #ffcc00;
+            padding: 7px;
+            border-radius: 15px;
+            font-weight: 700;
+            box-shadow: 0px 1px 1px 1px #00000043;
+            transition: 0.3s;
+        }
+
+        .nav a:hover {
+            color: rgb(0, 0, 0);
+            transform: scale(1.02);
+            background-color: #ffffffac;
+            box-shadow: 0px 3px 3px 3px #000000;
+        }
+  </style>
+
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+</head>
+
+<body>
+  <div class="nav">
+    <div class="navanchor"
+        style="background-color: #ffd595;padding-left:20px;padding-right:20px;padding-top: 15px;padding-bottom: 15px;border-radius:25px;box-shadow:0px 2px 2px 2px #0000007b;">
+        <a href="#home">Home</a>
+        <a href="#about">About Us</a>
+        <a href="#booking">Booking</a>
+        <a href="#contact">Contact Us</a>
+    </div>
+</div>
+
+  <h1>📍 My Live SOS Location</h1>
+  <button onclick="sendSOS()">🚨 Send SOS</button>
+
+  <div class="location-box" id="location-info">
+    Getting your location...
+  </div>
+
+  <h2>📍 Your Live Location</h2>
+  <div id="map"></div>
+
+  <script>
+    let currentLocation = {};
+
+    function animateBox() {
+      const box = document.getElementById('location-info');
+      box.classList.remove('animated'); // reset animation
+      void box.offsetWidth; // trigger reflow
+      box.classList.add('animated');
+    }
+
+    function updateLocationDisplay(lat, lon) {
+      const locBox = document.getElementById('location-info');
+      locBox.innerHTML = `Latitude: <b>${lat.toFixed(5)}</b><br>Longitude: <b>${lon.toFixed(5)}</b>`;
+      animateBox();
+    }
+
+    function getLocation() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition((position) => {
+          const latitude = position.coords.latitude;
+          const longitude = position.coords.longitude;
+          currentLocation = { latitude, longitude };
+
+          updateLocationDisplay(latitude, longitude);
+        }, () => {
+          document.getElementById('location-info').innerHTML = 'Location access denied.';
+        });
+      } else {
+        document.getElementById('location-info').innerHTML = 'Geolocation is not supported.';
+      }
+    }
+
+    function sendSOS() {
+      if (!currentLocation.latitude) {
+        alert('Location not available yet. Please wait...');
+        return;
+      }
+
+      const sosData = {
+        latitude: currentLocation.latitude,
+        longitude: currentLocation.longitude,
+        timestamp: new Date().toISOString()
+      };
+
+      fetch('http://localhost:3000/api/sos', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(sosData)
+      })
+      .then(res => res.json())
+      .then(data => {
+        alert('✅ SOS Sent Successfully!');
+        console.log('Server Response:', data);
+      })
+      .catch(err => {
+        alert('❌ Failed to send SOS');
+        console.error(err);
+      });
+    }
+
+    getLocation(); // Auto get on page load
+
+    // Leaflet Map
+    const map = L.map('map').setView([0, 0], 13);
+    const marker = L.marker([0, 0]).addTo(map);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    function updateLocation() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(position => {
+          const lat = position.coords.latitude;
+          const lng = position.coords.longitude;
+
+          map.setView([lat, lng], 15);
+          marker.setLatLng([lat, lng]).bindPopup("📍 You are here").openPopup();
+          updateLocationDisplay(lat, lng);
+        }, () => alert("Failed to get location"));
+      } else {
+        alert("Geolocation not supported");
+      }
+    }
+
+    updateLocation();
+    setInterval(updateLocation, 10000); // Update every 10 seconds
+  </script>
+
+</body>
+</html>
