@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>7 Wonders Journey</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+/* ================= BASE STYLES ================= */
+:root {
+  --primary: #ff6f00;
+  --primary-light: #ffcc80;
+  --primary-dark: #e65100;
+  --secondary: #2e7d32;
+  --secondary-light: #e8f5e9;
+  --light: #fff7f0;
+  --white: #ffffff;
+  --text-dark: #333;
+  --text-light: #666;
+  --shadow: rgba(0, 0, 0, 0.08);
+  --shadow-dark: rgba(0, 0, 0, 0.12);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #faf9f7;
+  color: var(--text-dark);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* ================= HERO SECTION ================= */
+.hero {
+  height: 55vh;
+  background: url("all_wonder_image.jpeg") center/cover no-repeat;
+  background-attachment: fixed;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.4) 100%);
+}
+
+.hero::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 120px;
+  background: linear-gradient(to top, #faf9f7, transparent);
+}
+
+.hero-text {
+  position: relative;
+  color: white;
+  text-align: center;
+  z-index: 2;
+  max-width: 800px;
+  padding: 0 30px;
+  animation: fadeInUp 1s ease;
+}
+
+.hero-text h1 {
+  font-size: 3.2rem;
+  margin-bottom: 15px;
+  text-shadow: 2px 2px 8px rgba(0,0,0,0.5);
+  font-weight: 700;
+}
+
+.hero-text p {
+  font-size: 1.3rem;
+  opacity: 0.9;
+  margin-bottom: 25px;
+  font-weight: 300;
+}
+
+.hero-badge {
+  display: inline-block;
+  background: rgba(255, 111, 0, 0.9);
+  padding: 10px 25px;
+  border-radius: 30px;
+  font-weight: 600;
+  font-size: 1rem;
+  letter-spacing: 0.5px;
+}
+
+/* ================= INFO SECTION ================= */
+.info-box {
+  max-width: 850px;
+  margin: -30px auto 50px;
+  background: var(--white);
+  padding: 25px 35px;
+  border-radius: 16px;
+  text-align: center;
+  box-shadow: 0 10px 30px var(--shadow);
+  position: relative;
+  z-index: 5;
+  border: 1px solid rgba(255, 111, 0, 0.1);
+}
+
+.info-box h2 {
+  color: var(--primary);
+  font-size: 1.9rem;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  font-weight: 600;
+}
+
+.info-box p {
+  font-size: 1.1rem;
+  color: var(--text-light);
+  line-height: 1.7;
+}
+
+/* ================= TIMELINE SECTION ================= */
+.timeline-container {
+  max-width: 900px;
+  margin: 0 auto 50px;
+  padding: 0 30px;
+}
+
+.timeline-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.timeline-header h2 {
+  font-size: 2.3rem;
+  color: var(--primary);
+  margin-bottom: 12px;
+  font-weight: 700;
+}
+
+.timeline-header p {
+  font-size: 1.15rem;
+  color: var(--text-light);
+  font-weight: 300;
+}
+
+/* TIMELINE */
+.timeline {
+  position: relative;
+}
+
+.timeline::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: linear-gradient(to bottom, var(--primary), var(--primary-light));
+}
+
+/* WONDER CARDS */
+.wonder {
+  position: relative;
+  margin-bottom: 50px;
+  width: 46%;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeInUp 0.6s forwards;
+}
+
+.wonder:nth-child(odd) {
+  left: 0;
+  padding-right: 60px;
+  text-align: right;
+}
+
+.wonder:nth-child(even) {
+  left: 54%;
+  padding-left: 60px;
+}
+
+/* TIMELINE DOTS */
+.wonder::before {
+  content: "";
+  position: absolute;
+  top: 40px;
+  width: 20px;
+  height: 20px;
+  background: var(--white);
+  border: 5px solid var(--primary);
+  border-radius: 50%;
+  z-index: 10;
+  box-shadow: 0 0 0 6px rgba(255, 111, 0, 0.15);
+}
+
+.wonder:nth-child(odd)::before {
+  right: -10px;
+}
+
+.wonder:nth-child(even)::before {
+  left: -10px;
+}
+
+/* WONDER CONTENT */
+.wonder-content {
+  background: var(--white);
+  padding: 28px;
+  border-radius: 16px;
+  box-shadow: 0 8px 25px var(--shadow);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(255, 111, 0, 0.08);
+}
+
+.wonder-content:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 15px 35px var(--shadow-dark);
+}
+
+/* WONDER HEADER */
+.wonder-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  gap: 15px;
+}
+
+.wonder-number {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 46px;
+  background: var(--primary);
+  color: white;
+  border-radius: 50%;
+  font-size: 1.3rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.wonder-title {
+  font-size: 1.6rem;
+  color: var(--primary);
+  margin: 0;
+  font-weight: 600;
+}
+
+/* WONDER DETAILS */
+.wonder-details {
+  margin-top: 5px;
+}
+
+.wonder-name {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  line-height: 1.3;
+}
+
+.wonder-name i {
+  color: var(--primary);
+  font-size: 1.4rem;
+}
+
+.wonder-description {
+  color: var(--text-light);
+  font-size: 1.1rem;
+  margin-bottom: 22px;
+  line-height: 1.7;
+  font-weight: 400;
+}
+
+.journey-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 18px;
+  background: var(--secondary-light);
+  color: var(--secondary);
+  font-size: 0.95rem;
+  font-weight: 600;
+  border-radius: 20px;
+  border: 1px solid rgba(46, 125, 50, 0.1);
+}
+
+/* ================= NEXT BUTTON ================= */
+.next-btn {
+  text-align: center;
+  margin: 50px auto 80px;
+  max-width: 450px;
+}
+
+.next-btn button {
+  background: linear-gradient(to right, var(--primary), var(--primary-dark));
+  color: white;
+  font-size: 1.2rem;
+  padding: 16px 40px;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin: 0 auto;
+  box-shadow: 0 8px 20px rgba(255, 111, 0, 0.25);
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.next-btn button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 30px rgba(255, 111, 0, 0.35);
+}
+
+/* ================= ANIMATIONS ================= */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 900px) {
+  .timeline-container {
+    padding: 0 20px;
+  }
+  
+  .wonder {
+    width: 48%;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero {
+    height: 50vh;
+    background-attachment: scroll;
+  }
+  
+  .hero-text h1 {
+    font-size: 2.5rem;
+  }
+  
+  .hero-text p {
+    font-size: 1.2rem;
+  }
+  
+  .info-box {
+    margin: -20px 20px 40px;
+    padding: 22px 25px;
+  }
+  
+  .timeline::before {
+    left: 30px;
+  }
+  
+  .wonder {
+    width: 100%;
+    left: 0 !important;
+    padding-left: 70px !important;
+    padding-right: 20px !important;
+    text-align: left !important;
+    margin-bottom: 40px;
+  }
+  
+  .wonder:nth-child(odd)::before,
+  .wonder:nth-child(even)::before {
+    left: 20px;
+    right: auto;
+  }
+  
+  .wonder-content {
+    padding: 24px;
+  }
+  
+  .wonder-name {
+    font-size: 1.6rem;
+  }
+  
+  .next-btn {
+    margin: 40px 20px 60px;
+  }
+  
+  .next-btn button {
+    width: 100%;
+    max-width: 320px;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-text h1 {
+    font-size: 2.2rem;
+  }
+  
+  .timeline-header h2 {
+    font-size: 2rem;
+  }
+  
+  .wonder-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  
+  .wonder-number {
+    width: 42px;
+    height: 42px;
+    font-size: 1.2rem;
+  }
+  
+  .wonder-title {
+    font-size: 1.4rem;
+  }
+  
+  .wonder-name {
+    font-size: 1.5rem;
+  }
+}
+:root {
+  --green-dark:#0f2f1f;
+  --green-main:#1f6f4a;
+  --green-light:#7ED957;
+  --glass:rgba(255,255,255,0.08);
+  --glass-border:rgba(255,255,255,0.18);
+  --text:#ffffff;
+  --muted:rgba(255,255,255,0.75);
+}
+
+/* RESET */
+* {
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:'Segoe UI',system-ui,sans-serif;
+}
+
+body {
+  background:
+    radial-gradient(circle at top left,#1f6f4a,#0b1e15 45%,#000 100%);
+  color:var(--text);
+  min-height:100vh;
+}
+
+/* ================= HERO ================= */
+.hero {
+  height:55vh;
+  background:url("all_wonder_image.jpeg") center/cover no-repeat;
+  position:relative;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.hero::before {
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(
+    135deg,
+    rgba(0,0,0,0.85),
+    rgba(0,0,0,0.45)
+  );
+}
+
+.hero::after {
+  content:"";
+  position:absolute;
+  bottom:0;
+  width:100%;
+  height:140px;
+  background:linear-gradient(to top,#000,transparent);
+}
+
+.hero-text {
+  position:relative;
+  text-align:center;
+  max-width:900px;
+  padding:0 25px;
+  animation:fadeInUp 1s ease;
+}
+
+.hero-text h1 {
+  font-size:3.2rem;
+  font-weight:900;
+  color:var(--green-light);
+}
+
+.hero-text p {
+  font-size:1.3rem;
+  margin:15px 0 25px;
+  opacity:0.9;
+}
+
+.hero-badge {
+  display:inline-block;
+  background:rgba(126,217,87,0.25);
+  color:var(--green-light);
+  padding:10px 28px;
+  border-radius:30px;
+  font-weight:700;
+  border:1px solid var(--green-light);
+}
+
+/* ================= INFO BOX ================= */
+.info-box {
+  max-width:900px;
+  margin:-40px auto 60px;
+  background:var(--glass);
+  backdrop-filter:blur(18px);
+  border:1px solid var(--glass-border);
+  border-radius:28px;
+  padding:30px 40px;
+  text-align:center;
+  box-shadow:0 30px 80px rgba(0,0,0,0.75);
+}
+
+.info-box h2 {
+  color:var(--green-light);
+  font-size:2rem;
+  margin-bottom:12px;
+}
+
+.info-box p {
+  color:var(--muted);
+  font-size:1.15rem;
+}
+
+/* ================= TIMELINE ================= */
+.timeline-container {
+  max-width:1000px;
+  margin:0 auto 80px;
+  padding:0 25px;
+}
+
+.timeline-header {
+  text-align:center;
+  margin-bottom:50px;
+}
+
+.timeline-header h2 {
+  font-size:2.4rem;
+  color:var(--green-light);
+}
+
+.timeline-header p {
+  color:var(--muted);
+}
+
+.timeline {
+  position:relative;
+}
+
+.timeline::before {
+  content:"";
+  position:absolute;
+  left:50%;
+  transform:translateX(-50%);
+  top:0;
+  bottom:0;
+  width:4px;
+  background:linear-gradient(
+    to bottom,
+    var(--green-light),
+    rgba(31,111,74,0.3)
+  );
+}
+
+/* ================= WONDER CARDS ================= */
+.wonder {
+  width:46%;
+  position:relative;
+  margin-bottom:60px;
+  opacity:0;
+  transform:translateY(25px);
+  animation:fadeInUp 0.7s forwards;
+}
+
+.wonder:nth-child(odd) {
+  text-align:right;
+  padding-right:70px;
+}
+
+.wonder:nth-child(even) {
+  left:54%;
+  padding-left:70px;
+}
+
+.wonder::before {
+  content:"";
+  position:absolute;
+  top:45px;
+  width:20px;
+  height:20px;
+  background:#000;
+  border:4px solid var(--green-light);
+  border-radius:50%;
+  box-shadow:0 0 0 8px rgba(126,217,87,0.2);
+}
+
+.wonder:nth-child(odd)::before { right:-10px; }
+.wonder:nth-child(even)::before { left:-10px; }
+
+/* CARD */
+.wonder-content {
+  background:var(--glass);
+  backdrop-filter:blur(18px);
+  border:1px solid var(--glass-border);
+  border-radius:26px;
+  padding:30px;
+  box-shadow:0 30px 80px rgba(0,0,0,0.7);
+  transition:0.35s ease;
+}
+
+.wonder-content:hover {
+  transform:translateY(-8px);
+  box-shadow:0 40px 100px rgba(0,0,0,0.9);
+}
+
+/* HEADER */
+.wonder-header {
+  display:flex;
+  align-items:center;
+  gap:15px;
+  margin-bottom:20px;
+}
+
+.wonder-number {
+  width:48px;
+  height:48px;
+  background:linear-gradient(135deg,var(--green-light),var(--green-main));
+  color:#000;
+  font-weight:900;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.wonder-title {
+  color:var(--green-light);
+  font-size:1.6rem;
+}
+
+/* DETAILS */
+.wonder-name {
+  font-size:1.9rem;
+  font-weight:900;
+  margin-bottom:15px;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  color: white;
+}
+
+.wonder-name i {
+  color:var(--green-light);
+}
+
+.wonder-description {
+  color:var(--muted);
+  font-size:1.1rem;
+  margin-bottom:20px;
+}
+
+.journey-badge {
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:9px 20px;
+  background:rgba(126,217,87,0.2);
+  color:var(--green-light);
+  border-radius:20px;
+  font-weight:700;
+  border:1px solid var(--green-light);
+}
+
+/* ================= NEXT BUTTON ================= */
+.next-btn {
+  text-align:center;
+  margin:80px auto;
+}
+
+.next-btn button {
+  background:linear-gradient(135deg,var(--green-light),var(--green-main));
+  color:#000;
+  font-size:1.25rem;
+  padding:18px 45px;
+  border:none;
+  border-radius:50px;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  gap:14px;
+  font-weight:900;
+  transition:0.35s;
+}
+
+.next-btn button:hover {
+  transform:translateY(-4px) scale(1.05);
+  box-shadow:0 20px 50px rgba(126,217,87,0.6);
+}
+
+/* ================= ANIMATIONS ================= */
+@keyframes fadeInUp {
+  from {opacity:0;transform:translateY(25px);}
+  to {opacity:1;transform:translateY(0);}
+}
+
+/* ================= MOBILE ================= */
+@media(max-width:768px){
+  .timeline::before { left:30px; }
+
+  .wonder {
+    width:100%;
+    padding-left:75px!important;
+    padding-right:20px!important;
+    text-align:left!important;
+    left:0!important;
+  }
+
+  .wonder::before {
+    left:20px!important;
+  }
+
+  .hero-text h1 {
+    font-size:2.4rem;
+  }
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-text">
+    <h1>🌍 Adventure Begins Here – 7 Wonders Journey</h1>
+    <p>Experience the world's most magnificent wonders in one incredible journey</p>
+    <div class="hero-badge" id="wondersCount"></div>
+  </div>
+</div>
+
+<!-- INFO BOX -->
+<div class="info-box">
+  <h2><i class="fas fa-globe-americas"></i> Your 7 Wonders Package</h2>
+  <p>Discover the world's most iconic wonders, carefully selected for an unforgettable journey through history and natural beauty.</p>
+</div>
+
+<!-- TIMELINE CONTAINER -->
+<div class="timeline-container">
+  <div class="timeline-header">
+    <h2>The 7 Wonders</h2>
+    <p>Explore each magnificent wonder in your journey</p>
+  </div>
+  
+  <div class="timeline" id="timeline"></div>
+</div>
+
+<!-- NEXT BUTTON -->
+<div class="next-btn">
+  <button onclick="goToBudget()">
+    <i class="fas fa-coins"></i> Plan Your Budget
+    <i class="fas fa-arrow-right"></i>
+  </button>
+</div>
+
+<script>
+/* =======================
+   READ DATA FROM LOCALSTORAGE
+======================= */
+const wonders = JSON.parse(localStorage.getItem("selectedWonders"));
+const timeline = document.getElementById("timeline");
+
+/* =======================
+   UPDATE WONDERS COUNT
+======================= */
+if (wonders && wonders.length > 0) {
+  document.getElementById("wondersCount").innerText = `${wonders.length} Magnificent Wonders`;
+}
+
+/* =======================
+   TIMELINE GENERATION
+======================= */
+if (!wonders || wonders.length === 0) {
+  timeline.innerHTML = `
+    <div style="text-align:center; padding:40px;">
+      <h3 style="color:#ff6f00;">No 7 Wonders package selected</h3>
+      <p>Please go back and select the 7 Wonders package first.</p>
+    </div>
+  `;
+} else {
+  // Add delay for staggered animation
+  let animationDelay = 0;
+  
+  wonders.forEach((place, index) => {
+    const div = document.createElement("div");
+    div.className = "wonder";
+    div.style.animationDelay = `${animationDelay}s`;
+    animationDelay += 0.15;
+    
+    div.innerHTML = `
+      <div class="wonder-content">
+        <div class="wonder-header">
+          <div class="wonder-number">${index + 1}</div>
+          <h3 class="wonder-title">Wonder ${index + 1}</h3>
+        </div>
+        <div class="wonder-details">
+          <div class="wonder-name">
+            <i class="fas fa-monument"></i>
+            ${place.name}
+          </div>
+          <p class="wonder-description">${place.description}</p>
+          <span class="journey-badge">
+            <i class="fas fa-check-circle"></i> Included in your journey
+          </span>
+        </div>
+      </div>
+    `;
+    
+    timeline.appendChild(div);
+  });
+}
+
+/* =======================
+   NEXT STEP FUNCTION
+======================= */
+function goToBudget() {
+  localStorage.setItem("bookingDetails", JSON.stringify({
+    type: "7wonders",
+    title: "🌍 7 Wonders Journey",
+    subtitle: "7 Wonders Package Booked",
+    sourcePage: "7wonderspackage.html",
+    wondersCount: wonders ? wonders.length : 0
+  }));
+
+  window.location.href = "budgetplanner.html";
+}
+
+/* =======================
+   ADD SCROLL ANIMATION
+======================= */
+document.addEventListener('DOMContentLoaded', function() {
+  const wonderElements = document.querySelectorAll('.wonder');
+  
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, { threshold: 0.1 });
+  
+  wonderElements.forEach(wonder => observer.observe(wonder));
+});
+</script>
+
+</body>
+</html>
+
+
+
