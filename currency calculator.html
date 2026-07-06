@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TravelMate - Currency Converter</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            /* TRAVELMATE PALETTE */
+            --bg-black: #000000;
+            --bg-green-deep: #0f2f1f;
+            --green-glow: #00ff55;
+            --green-dim: #1f6f4a;
+            --text-main: #ffffff;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Roboto', sans-serif;
+        }
+
+        body {
+            /* DARK RADIAL BACKGROUND */
+            background: radial-gradient(circle at center top, var(--bg-green-deep) 0%, var(--bg-black) 90%);
+            min-height: 100vh;
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow: hidden; /* Prevents scrollbars from moving icons */
+            position: relative;
+        }
+
+        /* --- BACKGROUND FLOATING ICONS --- */
+        .currency-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0; /* Behind everything */
+            pointer-events: none; /* User can't click them */
+            overflow: hidden;
+        }
+
+        .float-icon {
+            position: absolute;
+            color: var(--green-glow);
+            opacity: 0.15; /* Transparent ghost look */
+            animation: floatAnimation 10s infinite ease-in-out alternate;
+            text-shadow: 0 0 20px var(--green-glow);
+        }
+
+        /* Distinct styles for variety */
+        .i1 { top: 10%; left: 10%; font-size: 4rem; animation-duration: 12s; }
+        .i2 { top: 20%; right: 15%; font-size: 6rem; animation-duration: 15s; filter: blur(2px); }
+        .i3 { bottom: 15%; left: 15%; font-size: 5rem; animation-duration: 10s; animation-delay: 2s; }
+        .i4 { bottom: 20%; right: 10%; font-size: 3rem; animation-duration: 18s; }
+        .i5 { top: 50%; left: 5%; font-size: 2.5rem; animation-duration: 14s; opacity: 0.1; }
+        .i6 { top: 40%; right: 5%; font-size: 4rem; animation-duration: 16s; opacity: 0.1; }
+
+        @keyframes floatAnimation {
+            0% { transform: translateY(0) rotate(0deg); }
+            100% { transform: translateY(-30px) rotate(10deg); }
+        }
+
+        /* --- NAVIGATION --- */
+        nav {
+            margin-top: 30px;
+            margin-bottom: 40px;
+            z-index: 10; /* Above background */
+        }
+
+        .nav-container {
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+            padding: 12px 40px;
+            border-radius: 50px;
+            border: 1px solid rgba(0, 255, 85, 0.2);
+            box-shadow: 0 0 20px rgba(0, 255, 85, 0.05);
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-container a {
+            color: #ccc;
+            text-decoration: none;
+            margin: 0 10px;
+            font-weight: 600;
+            font-size: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: 0.3s;
+        }
+
+        .nav-container a:hover {
+            color: var(--green-glow);
+            text-shadow: 0 0 10px var(--green-glow);
+        }
+
+        /* --- MAIN CONVERTER CARD --- */
+        .glass-panel {
+            z-index: 10; /* Above background */
+            background: var(--glass-bg);
+            backdrop-filter: blur(25px); /* Strong blur so text is readable over icons */
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid var(--glass-border);
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            
+            border-radius: 20px;
+            padding: 40px;
+            width: 90%;
+            max-width: 600px;
+            text-align: center;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
+            transition: transform 0.3s;
+            position: relative;
+        }
+
+        .glass-panel:hover {
+            transform: translateY(-5px);
+            border-color: var(--green-dim);
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 300;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 30px;
+        }
+
+        h1 span {
+            color: var(--green-glow);
+            font-weight: 800;
+            text-shadow: 0 0 15px rgba(0, 255, 85, 0.4);
+        }
+
+        /* --- INPUTS --- */
+        .input-group {
+            margin-bottom: 25px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--green-glow);
+            font-size: 0.9rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            color: white;
+            font-size: 1.1rem;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        option {
+            background: #000;
+            color: white;
+            padding: 10px;
+        }
+
+        input:focus, select:focus {
+            border-color: var(--green-glow);
+            box-shadow: 0 0 15px rgba(0, 255, 85, 0.1);
+            background: rgba(0, 255, 85, 0.05);
+        }
+
+        /* --- BUTTON --- */
+        .convert-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, var(--green-dim), var(--green-glow));
+            border: none;
+            border-radius: 50px;
+            color: #000;
+            font-size: 1.1rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .convert-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 25px var(--green-glow);
+        }
+
+        .convert-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* --- RESULT BOX --- */
+        .result-box {
+            margin-top: 30px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 15px;
+            padding: 20px;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--glass-border);
+        }
+
+        #result {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.5);
+        }
+
+        .currency-symbol {
+            color: var(--green-glow);
+            margin-right: 10px;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            h1 { font-size: 1.5rem; }
+            .nav-container { padding: 10px 20px; }
+            .nav-container a { font-size: 12px; margin: 0 5px; }
+            .float-icon { opacity: 0.1; } /* Dim icons more on mobile */
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="currency-bg">
+        <i class="fas fa-rupee-sign float-icon i1"></i>
+        <i class="fas fa-dollar-sign float-icon i2"></i>
+        <i class="fas fa-euro-sign float-icon i3"></i>
+        <i class="fas fa-yen-sign float-icon i4"></i>
+        <i class="fas fa-pound-sign float-icon i5"></i>
+        <i class="fas fa-bitcoin float-icon i6"></i>
+    </div>
+
+    <nav>
+        <div class="nav-container">
+            <a href="originalpage2.html">Home</a>
+            <a href="aboutusmain.html">About</a>
+            <a href="paymentpage.html">Booking</a>
+            <a href="contactus.html">Contact</a>
+        </div>
+    </nav>
+
+    <div class="glass-panel">
+        <h1>INR <span>Converter</span></h1>
+        
+        <div class="input-group">
+            <label for="amount">ENTER AMOUNT (₹)</label>
+            <input type="number" id="amount" placeholder="e.g. 5000" />
+        </div>
+
+        <div class="input-group">
+            <label for="currency">CONVERT TO</label>
+            <select id="currency">
+                <option value="usd">USD (US Dollar)</option>
+                <option value="eur">EUR (Euro - Europe)</option>
+                <option value="gbp">GBP (British Pound - UK)</option>
+                <option value="cny">CNY (Chinese Yuan)</option>
+                <option value="mxn">MXN (Mexican Peso)</option>
+                <option value="jod">JOD (Jordanian Dinar)</option>
+                <option value="pen">PEN (Peruvian Sol)</option>
+                <option value="brl">BRL (Brazilian Real)</option>
+                <option value="aed">AED (UAE Dirham)</option>
+                <option value="qar">QAR (Qatari Riyal)</option>
+                <option value="sgd">SGD (Singapore Dollar)</option>
+                <option value="try">TRY (Turkish Lira)</option>
+                <option value="hkd">HKD (Hong Kong Dollar)</option>
+                <option value="myr">MYR (Malaysian Ringgit)</option>
+            </select>
+        </div>
+
+        <button class="convert-btn" onclick="convertCurrency()">
+            CONVERT NOW <i class="fas fa-arrow-right"></i>
+        </button>
+
+        <div class="result-box">
+            <h3 id="result">Result will appear here...</h3>
+        </div>
+
+    </div>
+
+    <script>
+        function convertCurrency() {
+            let amount = document.getElementById("amount").value;
+            let currency = document.getElementById("currency").value;
+            let resultDisplay = document.getElementById("result");
+
+            if(amount === "") {
+                resultDisplay.innerHTML = "<span style='color:#ff3333'>Please enter an amount.</span>";
+                return;
+            }
+
+            // Updated Rates
+            let exchangeRates = {
+                "usd": 0.012,
+                "cny": 0.086,
+                "mxn": 0.20,
+                "jod": 0.0085,
+                "pen": 0.045,
+                "brl": 0.059,
+                "eur": 0.011,
+                "aed": 0.044,
+                "qar": 0.044,
+                "sgd": 0.016,
+                "gbp": 0.0095,
+                "try": 0.36,
+                "hkd": 0.093,
+                "myr": 0.056
+            };
+
+            if (currency in exchangeRates) {
+                let convertedAmount = (amount * exchangeRates[currency]).toFixed(2);
+                
+                resultDisplay.innerHTML = `
+                    <span style="font-size:1rem; opacity:0.7;">${amount} INR = </span><br>
+                    <span class="currency-symbol">${currency.toUpperCase()}</span> ${convertedAmount}
+                `;
+            } else {
+                resultDisplay.innerText = "Invalid currency selection.";
+            }
+        }
+    </script>
+</body>
+</html>

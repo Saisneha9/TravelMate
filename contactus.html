@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TravelMate - Contact Us</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            /* THEME PALETTE */
+            --bg-black: #000000;
+            --bg-green-deep: #0f2f1f;
+            --green-glow: #00ff55;
+            --green-dim: #1f6f4a;
+            --text-main: #ffffff;
+            --text-muted: #aaaaaa;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Roboto', sans-serif;
+        }
+
+        body {
+            /* DARK RADIAL BACKGROUND */
+            background: radial-gradient(circle at center top, var(--bg-green-deep) 0%, var(--bg-black) 90%);
+            min-height: 100vh;
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* --- NAVIGATION (Unified Style) --- */
+        nav {
+            max-width: 1200px;
+            margin: 30px auto 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .nav-container {
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+            padding: 12px 40px;
+            border-radius: 50px;
+            border: 1px solid rgba(0, 255, 85, 0.2);
+            box-shadow: 0 0 20px rgba(0, 255, 85, 0.05);
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-container a {
+            color: #ccc;
+            text-decoration: none;
+            margin: 0 10px;
+            font-weight: 600;
+            font-size: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: 0.3s;
+        }
+
+        .nav-container a:hover, .nav-container a.active {
+            color: var(--green-glow);
+            text-shadow: 0 0 10px var(--green-glow);
+        }
+
+        main {
+            flex: 1;
+            padding: 3rem 1.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* --- TITLES --- */
+        .page-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            font-weight: 300;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        h1 span {
+            font-weight: 800;
+            color: var(--green-glow);
+            text-shadow: 0 0 20px rgba(0, 255, 85, 0.4);
+        }
+
+        /* --- CONTACT SECTION LAYOUT --- */
+        .contact-container {
+            display: flex;
+            gap: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .contact-info, .contact-form {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        /* --- INFO CARDS (Left Side) --- */
+        .info-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            transition: transform 0.3s, border-color 0.3s;
+        }
+
+        .info-card:hover {
+            transform: translateX(10px);
+            border-color: var(--green-dim);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .icon-box {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--green-dim), var(--bg-black));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 20px;
+            border: 1px solid var(--green-glow);
+            box-shadow: 0 0 10px rgba(0, 255, 85, 0.2);
+        }
+
+        .icon-box i {
+            color: var(--green-glow);
+            font-size: 1.2rem;
+        }
+
+        .text-box h3 {
+            font-size: 1.1rem;
+            color: var(--text-main);
+            margin-bottom: 5px;
+        }
+
+        .text-box p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* --- SOCIAL LINKS --- */
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            justify-content: center; /* Centered on mobile, left on desktop logic handled below */
+        }
+        
+        @media(min-width: 768px) { .social-links { justify-content: flex-start; } }
+
+        .social-btn {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+            transition: 0.3s;
+            border: 1px solid transparent;
+        }
+
+        .social-btn:hover {
+            background: var(--green-glow);
+            color: black;
+            transform: translateY(-5px);
+            box-shadow: 0 0 15px var(--green-glow);
+        }
+
+        /* --- FORM (Right Side) --- */
+        .contact-form-wrapper {
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(20px);
+            padding: 40px;
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+
+        .contact-form-wrapper h2 {
+            margin-bottom: 25px;
+            font-weight: 300;
+            border-bottom: 1px solid var(--green-dim);
+            padding-bottom: 10px;
+            display: inline-block;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--green-glow);
+            font-size: 0.9rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            color: white;
+            font-size: 1rem;
+            transition: 0.3s;
+            outline: none;
+        }
+
+        /* Fix Select Options Background */
+        select option {
+            background: #000;
+            color: white;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--green-glow);
+            background: rgba(0, 255, 85, 0.05);
+            box-shadow: 0 0 10px rgba(0, 255, 85, 0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        button.send-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, var(--green-dim), var(--green-glow));
+            border: none;
+            border-radius: 30px;
+            color: black;
+            font-weight: bold;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        button.send-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 20px var(--green-glow);
+        }
+
+        /* --- NOTIFICATION --- */
+        .notification {
+            position: fixed;
+            top: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 20, 10, 0.9);
+            border: 1px solid var(--green-glow);
+            color: var(--green-glow);
+            padding: 15px 30px;
+            border-radius: 30px;
+            box-shadow: 0 0 20px rgba(0, 255, 85, 0.3);
+            transition: top 0.5s ease;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            backdrop-filter: blur(10px);
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            background: rgba(0,0,0,0.8);
+            border-top: 1px solid var(--glass-border);
+            padding: 2rem;
+            text-align: center;
+            margin-top: auto;
+        }
+
+        .footer-logo {
+            color: var(--green-glow);
+            font-weight: 800;
+            text-decoration: none;
+            font-size: 1.5rem;
+            letter-spacing: 2px;
+        }
+
+        .copyright {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            margin-top: 10px;
+        }
+
+        /* ANIMATIONS */
+        .fade-in { animation: fadeIn 0.8s forwards; opacity: 0; transform: translateY(20px); }
+        .delay-1 { animation-delay: 0.2s; }
+        .delay-2 { animation-delay: 0.4s; }
+
+        @keyframes fadeIn {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .contact-container { flex-direction: column; }
+            h1 { font-size: 2rem; }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <nav>
+            <div class="nav-container">
+                <a href="originalpage.html">Home</a>
+                <a href="aboutusmain.html">About</a>
+                <a href="contactus.html" class="active">Contact</a>
+                <a href="paymentpage.html">Premium</a>
+            </div>
+        </nav>
+
+        <main>
+            <div class="page-header fade-in">
+                <h1>Get in <span>Touch</span></h1>
+                <p style="color: #aaa;">We are here to help you plan your next adventure.</p>
+            </div>
+
+            <div class="contact-container">
+                
+                <div class="contact-info fade-in delay-1">
+                    
+                    <div class="info-card">
+                        <div class="icon-box"><i class="fas fa-map-marker-alt"></i></div>
+                        <div class="text-box">
+                            <h3>Location</h3>
+                            <p>Amrita Vishwa Vidyapeetham, Amaravati</p>
+                        </div>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="icon-box"><i class="fas fa-phone-alt"></i></div>
+                        <div class="text-box">
+                            <h3>Phone</h3>
+                            <p>+91 6305863841</p>
+                        </div>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="icon-box"><i class="fas fa-envelope"></i></div>
+                        <div class="text-box">
+                            <h3>Email</h3>
+                            <p>support@travelmate.com</p>
+                        </div>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="icon-box"><i class="fas fa-clock"></i></div>
+                        <div class="text-box">
+                            <h3>Hours</h3>
+                            <p>Mon - Fri, 9:00 AM - 6:00 PM</p>
+                        </div>
+                    </div>
+
+                    <div class="social-links">
+                        <a href="#" class="social-btn"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="social-btn"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-btn"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="social-btn"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+
+                </div>
+
+                <div class="contact-form fade-in delay-2">
+                    <div class="contact-form-wrapper">
+                        <h2>Send Message</h2>
+                        <form id="contactForm">
+                            <div class="form-group">
+                                <label for="name">Name</label>
+                                <input type="text" id="name" placeholder="Your Name" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="email">Email</label>
+                                <input type="email" id="email" placeholder="email@example.com" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="subject">Subject</label>
+                                <select id="subject" required>
+                                    <option value="" disabled selected>Select Subject</option>
+                                    <option value="general">General Inquiry</option>
+                                    <option value="support">Technical Support</option>
+                                    <option value="tour">Tour Guidance</option>
+                                    <option value="feedback">Feedback</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="message">Message</label>
+                                <textarea id="message" placeholder="How can we help?" required></textarea>
+                            </div>
+
+                            <button type="submit" class="send-btn">
+                                Send Message <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+
+        <footer>
+            <a href="#" class="footer-logo">TravelMate</a>
+            <div class="copyright">
+                &copy; 2026 TravelMate Inc. All rights reserved.
+            </div>
+        </footer>
+    </div>
+
+    <div class="notification" id="notification">
+        <i class="fas fa-check-circle"></i> Message Sent Successfully!
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const contactForm = document.getElementById('contactForm');
+            const notification = document.getElementById('notification');
+
+            contactForm.addEventListener('submit', function (e) {
+                e.preventDefault();
+
+                const submitButton = this.querySelector('button[type="submit"]');
+                const originalContent = submitButton.innerHTML;
+
+                // Loading State
+                submitButton.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Sending...';
+                submitButton.style.opacity = '0.7';
+
+                // Simulate API Call
+                setTimeout(function () {
+                    contactForm.reset();
+
+                    // Show Notification
+                    notification.style.top = '30px';
+
+                    // Reset Button
+                    submitButton.innerHTML = originalContent;
+                    submitButton.style.opacity = '1';
+
+                    // Hide Notification
+                    setTimeout(function () {
+                        notification.style.top = '-100px';
+                    }, 3000);
+                }, 1500);
+            });
+        });
+    </script>
+</body>
+</html>
