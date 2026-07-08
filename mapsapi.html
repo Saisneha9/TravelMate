@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>OpenLayers with Geolocation</title>
+    <script src="https://cdn.jsdelivr.net/npm/ol@latest/dist/ol.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@latest/dist/ol.css">
+    <style>
+        /* ================= GLOBAL ================= */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", Arial, sans-serif;
+  background: linear-gradient(to bottom, #071f18, #0b2e24);
+  color: #cfeee4;
+}
+
+/* ================= HEADER ================= */
+.header {
+  background: linear-gradient(to right, #0b2e24, #114235);
+  padding: 18px;
+  text-align: center;
+  font-size: 30px;
+  font-weight: bold;
+  color: #e6fff7;
+  letter-spacing: 1px;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.7);
+}
+
+/* ================= NAV ================= */
+.nav {
+  display: flex;
+  justify-content: center;
+  background: linear-gradient(to right, #0f3d2f, #14503e);
+  padding: 12px;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.6);
+}
+
+.navanchor {
+  background: linear-gradient(145deg, #0b2e24, #114235);
+  padding: 14px 30px;
+  border-radius: 30px;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08);
+}
+
+.nav a {
+  margin: 0 15px;
+  color: #9ff0cf;
+  text-decoration: none;
+  font-size: 18px;
+  font-weight: 700;
+  transition: 0.3s;
+}
+
+.nav a:hover {
+  color: #ffffff;
+  transform: scale(1.08);
+}
+
+/* ================= MAP ================= */
+#map {
+  width: 100%;
+  height: 550px;
+  position: relative;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+/* ================= COORDINATES BOX ================= */
+.coordinates-container {
+  position: absolute;
+  bottom: 15px;
+  left: 15px;
+  background: linear-gradient(145deg, #0b2e24, #114235);
+  padding: 14px 16px;
+  border-radius: 14px;
+  z-index: 1000;
+  font-weight: bold;
+  box-shadow: 0 14px 30px rgba(0,0,0,0.7);
+}
+
+.coordinates-title {
+  margin: 0 0 6px;
+  color: #a8e6cf;
+  font-size: 16px;
+}
+
+.coordinates-value {
+  margin: 2px 0;
+  color: #d9f4eb;
+  font-size: 14px;
+}
+
+/* ================= FOOTER ================= */
+.simple-footer {
+  background: linear-gradient(to right, #0b2e24, #114235);
+  padding: 18px 0;
+  text-align: center;
+  color: #9ccfc0;
+  font-size: 14px;
+  box-shadow: 0 -12px 30px rgba(0,0,0,0.7);
+}
+
+.simple-footer::before {
+  content: "";
+  display: block;
+  height: 2px;
+  background: linear-gradient(to right, #3db083, #7fffd4);
+  margin-bottom: 10px;
+}
+
+/* ================= FOOTER LINKS ================= */
+.footer-links {
+  display: inline-flex;
+  gap: 22px;
+  margin-bottom: 8px;
+}
+
+.footer-links a {
+  color: #9ff0cf;
+  text-decoration: none;
+  font-size: 14px;
+  transition: 0.3s;
+}
+
+.footer-links a:hover {
+  color: #ffffff;
+}
+
+/* ================= MOBILE ================= */
+@media (max-width: 768px) {
+  .header {
+    font-size: 22px;
+    padding: 14px;
+  }
+
+  .nav a {
+    font-size: 16px;
+    margin: 0 10px;
+  }
+
+  #map {
+    height: 380px;
+  }
+
+  .coordinates-container {
+    font-size: 13px;
+  }
+}
+
+    </style>
+</head>
+<body>
+    <div class="header"><span style="font-family:Verdana, Geneva, Tahoma, sans-serif;">Smart Location Finder</span>
+    </div>
+    <div class="nav">
+        <div class="navanchor" style="background-color: #ffd595;padding-left:20px;padding-right:20px;padding-top: 15px;padding-bottom: 15px;border-radius:25px;box-shadow:0px 2px 2px 2px #0000007b;">
+        <a href="originalpage.html">Home</a>
+        <a href="aboutusmain.html">About Us</a>
+        <a href="paymentpage.html">Payment</a>
+        <a href="contactus.html">Contact Us</a>
+    </div>
+    </div>
+    <div id="map">
+     
+        <div id="coordinates" class="coordinates-container">
+            <h4 class="coordinates-title">Your Location</h4>
+            <p id="lat" class="coordinates-value">Latitude: Loading...</p>
+            <p id="lon" class="coordinates-value">Longitude: Loading...</p>
+            <p id="accuracy" class="coordinates-value">Accuracy: -</p>
+        </div>
+    </div>
+    
+    <script>
+        var map = new ol.Map({
+            target: 'map',
+            layers: [
+                new ol.layer.Tile({
+                    source: new ol.source.OSM()
+                })
+            ],
+            view: new ol.View({
+                center: ol.proj.fromLonLat([12.173891,78.042068]),
+                zoom: 10
+            })
+        });
+        
+        if ("geolocation" in navigator) {
+            navigator.geolocation.getCurrentPosition(function(position) {
+                var userCoords = [position.coords.longitude, position.coords.latitude];
+                var userLocation = ol.proj.fromLonLat(userCoords);
+                
+                map.getView().setCenter(userLocation);
+                map.getView().setZoom(15);
+               
+                document.getElementById("lat").textContent = "Latitude: " + position.coords.latitude.toFixed(6);
+                document.getElementById("lon").textContent = "Longitude: " + position.coords.longitude.toFixed(6);
+                document.getElementById("accuracy").textContent = "Accuracy: " + position.coords.accuracy.toFixed(1) + " meters";
+                
+             
+                var marker = new ol.Feature({
+                    geometry: new ol.geom.Point(userLocation)
+                });
+                
+                var vectorSource = new ol.source.Vector({
+                    features: [marker]
+                });
+                
+                var vectorLayer = new ol.layer.Vector({
+                    source: vectorSource,
+                    style: new ol.style.Style({
+                        image: new ol.style.Icon({
+                            src: 'https://upload.wikimedia.org/wikipedia/commons/e/ec/RedDot.svg',
+                            scale: 0.8
+                        })
+                    })
+                });
+                
+                map.addLayer(vectorLayer);
+                
+               
+                navigator.geolocation.watchPosition(function(position) {
+                    document.getElementById("lat").textContent = "Latitude: " + position.coords.latitude.toFixed(6);
+                    document.getElementById("lon").textContent = "Longitude: " + position.coords.longitude.toFixed(6);
+                    document.getElementById("accuracy").textContent = "Accuracy: " + position.coords.accuracy.toFixed(1) + " meters";
+                  
+                    var newCoords = [position.coords.longitude, position.coords.latitude];
+                    var newLocation = ol.proj.fromLonLat(newCoords);
+                    marker.getGeometry().setCoordinates(newLocation);
+                });
+                
+            }, function(error) {
+                console.error("Error getting location:", error);
+                document.getElementById("coordinates").innerHTML = "<p>Error getting location: " + error.message + "</p>";
+            }, {
+                enableHighAccuracy: true,
+                timeout: 5000,
+                maximumAge: 0
+            });
+        } else {
+            console.error("Geolocation is not supported by this browser.");
+            document.getElementById("coordinates").innerHTML = "<p>Geolocation is not supported by this browser.</p>";
+        }
+        
+   
+        map.on('singleclick', function(evt) {
+            var coords = ol.proj.toLonLat(evt.coordinate);
+            var lat = coords[1].toFixed(6);
+            var lon = coords[0].toFixed(6);
+            
+            console.log("Clicked at: " + lat + ", " + lon);
+            
+        });
+    </script>
+    
+    
+    <footer class="simple-footer">
+        <div class="footer-links">
+            <a href="#about">About Us</a>
+            <a href="#privacy">Privacy Policy</a>
+            <a href="#terms">Terms</a>
+            <a href="#contact">Contact</a>
+        </div>
+        <div>
+            &copy; 2025 Smart Location Finder. All Rights Reserved.
+        </div>
+    </footer>
+</body>
+</html>

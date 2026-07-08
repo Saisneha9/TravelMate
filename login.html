@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TravelMate Login</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --green-dark: #0f2f1f;
+            --green-main: #1f6f4a;
+            --green-light: #24d842;
+            --black: #000;
+            --text: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        body {
+            background: url("hero-hiker.jpg.png") center/cover no-repeat; /* Use your image here */
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text);
+        }
+
+        /* Dark Overlay */
+        body::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: -1;
+        }
+
+        /* GLASSMOPHISM CARD */
+        .container {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-top: 1px solid rgba(255, 255, 255, 0.3);
+            border-left: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+            border-radius: 20px;
+            width: 400px;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        h2 {
+            margin-bottom: 30px;
+            color: var(--green-light);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 25px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 15px 15px 15px 45px;
+            background: rgba(0, 0, 0, 0.3);
+            border: none;
+            outline: none;
+            border-radius: 30px;
+            color: #fff;
+            font-size: 16px;
+            border: 1px solid transparent;
+            transition: 0.3s;
+        }
+
+        .input-group input:focus {
+            border-color: var(--green-light);
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .input-group i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--green-light);
+        }
+
+        /* BUTTONS */
+        .btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 30px;
+            background: linear-gradient(135deg, var(--green-light), var(--green-main));
+            color: #000;
+            font-weight: bold;
+            font-size: 18px;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px var(--green-light);
+        }
+
+        .toggle-text {
+            margin-top: 20px;
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        .toggle-text a {
+            color: var(--green-light);
+            text-decoration: none;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .toggle-text a:hover {
+            text-decoration: underline;
+        }
+
+        /* Form Toggle Logic */
+        #signup-form {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div id="login-form">
+            <h2>Welcome Back</h2>
+            <div class="input-group">
+                <i class="fas fa-envelope"></i>
+                <input type="email" id="loginEmail" placeholder="Email Address" required>
+            </div>
+            <div class="input-group">
+                <i class="fas fa-lock"></i>
+                <input type="password" id="loginPassword" placeholder="Password" required>
+            </div>
+            <button class="btn" onclick="handleLogin()" onclick="sendWelcome()">LOGIN</button>
+            <p class="toggle-text">Don't have an account? <a onclick="toggleForm()">Sign Up</a></p>
+        </div>
+
+        <div id="signup-form">
+            <h2>Join TravelMate</h2>
+            <div class="input-group">
+                <i class="fas fa-envelope"></i>
+                <input type="email" id="signupEmail" placeholder="Email Address" required>
+            </div>
+            <div class="input-group">
+                <i class="fas fa-lock"></i>
+                <input type="password" id="signupPassword" placeholder="Create Password" required>
+            </div>
+            <button class="btn" onclick="handleSignup()">SIGN UP</button>
+            <p class="toggle-text">Already have an account? <a onclick="toggleForm()">Login</a></p>
+        </div>
+    </div>
+
+    <script>
+    // Toggle between Login and Signup
+    function toggleForm() {
+        const loginForm = document.getElementById("login-form");
+        const signupForm = document.getElementById("signup-form");
+        
+        if (loginForm.style.display === "none") {
+            loginForm.style.display = "block";
+            signupForm.style.display = "none";
+        } else {
+            loginForm.style.display = "none";
+            signupForm.style.display = "block";
+        }
+    }
+
+    // --- 1. HANDLE SIGN UP ---
+    async function handleSignup() {
+        const email = document.getElementById("signupEmail").value;
+        const password = document.getElementById("signupPassword").value;
+
+        if(!email || !password) {
+            alert("Please fill in all fields");
+            return;
+        }
+
+        try {
+            // 1. Create Account in Python Backend
+            const response = await fetch('http://127.0.0.1:5000/signup', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: email, password: password })
+            });
+
+            const result = await response.json();
+            
+            if (result.success) {
+                // 2. IF SUCCESSFUL -> SEND WELCOME EMAIL
+                // We call the email function here!
+                await sendWelcome(email); 
+
+                alert("Account Created & Email Sent! Please Login.");
+                toggleForm(); // Switch to login screen
+            } else {
+                alert("Error: " + result.message);
+            }
+        } catch (error) {
+            console.error("Error:", error);
+            alert("Could not connect to server. Check app.py!");
+        }
+    }
+
+    // --- 2. SEND EMAIL TO N8N ---
+    async function sendWelcome(userEmail) {
+        try {
+            await fetch("https://sneha-9.app.n8n.cloud/webhook/hi-welcome", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email: userEmail })
+            });
+            console.log("Email request sent to n8n");
+        } catch (error) {
+            console.error("Failed to send email webhook:", error);
+        }
+    }
+
+    // --- 3. HANDLE LOGIN ---
+    // Inside login.html <script>
+
+async function handleLogin() {
+    const email = document.getElementById("loginEmail").value;
+    const password = document.getElementById("loginPassword").value;
+
+    // ... (Your existing validation code) ...
+
+    try {
+        const response = await fetch('http://127.0.0.1:5000/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: email, password: password })
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            // --- ADD THIS LINE ---
+            // Save user info to browser storage
+            localStorage.setItem("loggedInUser", email); 
+            
+            // Redirect
+            window.location.href = "originalpage.html"; 
+        } else {
+            alert("Login Failed: " + result.message);
+        }
+    } catch (error) {
+        console.error("Error:", error);
+    }
+}
+</script>
+</body>
+</html>

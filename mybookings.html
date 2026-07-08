@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<meta charset="UTF-8">
+<title>My Bookings</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body {
+  margin: 0;
+  font-family: "Segoe UI", sans-serif;
+  background: linear-gradient(135deg, #fff1e6, #ffe8d6);
+}
+
+/* HEADER */
+.header {
+  padding: 30px;
+  text-align: center;
+  background: linear-gradient(135deg, #ff6f00, #ff8f1f);
+  color: white;
+}
+
+.header h1 {
+  font-size: 2.4rem;
+}
+
+/* CONTAINER */
+.container {
+  max-width: 1000px;
+  margin: 40px auto;
+  padding: 0 20px;
+}
+
+/* BOOKING CARD */
+.booking-card {
+  background: white;
+  border-radius: 20px;
+  padding: 25px;
+  box-shadow: 0 20px 45px rgba(0,0,0,0.2);
+  margin-bottom: 30px;
+  animation: fadeIn 0.5s ease;
+}
+
+.booking-title {
+  font-size: 1.6rem;
+  color: #ff6f00;
+}
+
+.meta {
+  margin: 10px 0;
+  font-size: 1rem;
+  color: #444;
+}
+
+/* STATUS */
+.status {
+  display: inline-block;
+  padding: 6px 14px;
+  background: #e8f5e9;
+  color: #2e7d32;
+  border-radius: 20px;
+  font-weight: bold;
+  font-size: 0.9rem;
+}
+
+/* ACTIONS */
+.actions {
+  margin-top: 20px;
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.actions button {
+  flex: 1;
+  min-width: 200px;
+  border: none;
+  padding: 12px;
+  border-radius: 30px;
+  font-size: 15px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.budget {
+  background: #ff6f00;
+  color: white;
+}
+
+.team {
+  background: #2c7be5;
+  color: white;
+}
+
+.actions button:hover {
+  transform: scale(1.05);
+}
+
+/* EMPTY */
+.empty {
+  text-align: center;
+  font-size: 1.2rem;
+  margin-top: 80px;
+  color: #666;
+}
+
+/* ANIMATION */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+:root {
+  --green-dark: #0f2f1f;
+  --green-main: #1f6f4a;
+  --green-light: #7ED957;
+  --glass: rgba(255,255,255,0.08);
+  --glass-border: rgba(255,255,255,0.18);
+  --text: #ffffff;
+  --muted: rgba(255,255,255,0.7);
+}
+
+/* RESET */
+body {
+  margin: 0;
+  font-family: "Segoe UI", system-ui, sans-serif;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top left, #1f6f4a, #0b1e15 45%, #000 100%);
+  color: var(--text);
+}
+
+/* HEADER */
+.header {
+  padding: 40px 20px;
+  text-align: center;
+  background: linear-gradient(
+    180deg,
+    rgba(31,111,74,0.45),
+    rgba(0,0,0,0.9)
+  );
+  box-shadow: 0 30px 80px rgba(0,0,0,0.8);
+}
+
+.header h1 {
+  font-size: 2.6rem;
+  color: var(--green-light);
+}
+
+.header p {
+  margin-top: 10px;
+  opacity: 0.85;
+}
+
+/* CONTAINER */
+.container {
+  max-width: 1100px;
+  margin: 50px auto;
+  padding: 0 20px;
+}
+
+/* BOOKING CARD */
+.booking-card {
+  background: var(--glass);
+  backdrop-filter: blur(18px);
+  border: 1px solid var(--glass-border);
+  border-radius: 30px;
+  padding: 35px;
+  box-shadow: 0 35px 90px rgba(0,0,0,0.75);
+  margin-bottom: 35px;
+  animation: fadeIn 0.6s ease;
+}
+
+/* BOOKING TITLE */
+.booking-title {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--green-light);
+}
+
+/* META INFO */
+.meta {
+  margin: 12px 0;
+  font-size: 1rem;
+  color: var(--muted);
+}
+
+/* STATUS */
+.status {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 8px 18px;
+  background: rgba(126,217,87,0.2);
+  color: var(--green-light);
+  border: 1px solid var(--green-light);
+  border-radius: 30px;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+/* ACTION BUTTONS */
+.actions {
+  margin-top: 25px;
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.actions button {
+  flex: 1;
+  min-width: 200px;
+  border: none;
+  padding: 14px;
+  border-radius: 35px;
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: 0.35s;
+}
+
+/* BUTTON THEMES */
+.budget {
+  background: linear-gradient(135deg, var(--green-light), var(--green-main));
+  color: #000;
+}
+
+.team {
+  background: rgba(0,0,0,0.8);
+  color: var(--green-light);
+  border: 1px solid var(--green-light);
+}
+
+/* BUTTON HOVER */
+.actions button:hover {
+  transform: translateY(-4px) scale(1.05);
+  box-shadow: 0 15px 40px rgba(126,217,87,0.5);
+}
+
+/* EMPTY STATE */
+.empty {
+  text-align: center;
+  font-size: 1.3rem;
+  margin-top: 120px;
+  color: var(--muted);
+}
+
+/* ANIMATION */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="header">
+  <h1>📌 My Bookings</h1>
+  <p>All your planned trips in one place</p>
+</div>
+
+<div class="container" id="bookingContainer"></div>
+
+<script>
+const booking = JSON.parse(localStorage.getItem("bookingDetails"));
+const container = document.getElementById("bookingContainer");
+
+if (!booking) {
+  container.innerHTML = `
+    <div class="empty">
+      😔 No bookings yet<br><br>
+      Start planning your journey!
+    </div>
+  `;
+} else {
+  container.innerHTML = `
+    <div class="booking-card">
+      <div class="booking-title">${booking.title}</div>
+
+      <div class="meta">🧭 ${booking.subtitle}</div>
+      
+
+      <span class="status">✔ Booked</span>
+
+     
+
+    </div>
+  `;
+}
+
+function goToBudget() {
+  window.location.href = "budgetplanner.html";
+}
+
+function goToTeam() {
+  window.location.href = "assignedteam.html";
+}
+</script>
+</body>
+</html>
