@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Your Travel Plan</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+/* ================= BASE STYLES ================= */
+:root {
+  --primary: #ff6f00;
+  --primary-light: #ffcc80;
+  --primary-dark: #e65100;
+  --secondary: #2e7d32;
+  --secondary-light: #e8f5e9;
+  --light: #fff7f0;
+  --white: #ffffff;
+  --text-dark: #333;
+  --text-light: #666;
+  --shadow: rgba(0, 0, 0, 0.08);
+  --shadow-dark: rgba(0, 0, 0, 0.12);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #faf9f7;
+  color: var(--text-dark);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* ================= HERO SECTION ================= */
+.hero {
+  height: 55vh;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.4) 100%);
+}
+
+.hero-text {
+  position: relative;
+  color: white;
+  text-align: center;
+  z-index: 2;
+  max-width: 800px;
+  padding: 0 30px;
+  animation: fadeInUp 1s ease;
+}
+
+.hero-text h1 {
+  font-size: 3.2rem;
+  margin-bottom: 15px;
+  text-shadow: 2px 2px 8px rgba(0,0,0,0.5);
+  font-weight: 700;
+}
+
+.hero-text p {
+  font-size: 1.3rem;
+  opacity: 0.9;
+  margin-bottom: 25px;
+  font-weight: 300;
+}
+
+.hero-badge {
+  display: inline-block;
+  background: rgba(255, 111, 0, 0.9);
+  padding: 10px 25px;
+  border-radius: 30px;
+  font-weight: 600;
+  font-size: 1rem;
+  letter-spacing: 0.5px;
+}
+
+/* ================= INFO SECTION ================= */
+.info-box {
+  max-width: 850px;
+  margin: -30px auto 50px;
+  background: var(--white);
+  padding: 25px 35px;
+  border-radius: 16px;
+  text-align: center;
+  box-shadow: 0 10px 30px var(--shadow);
+  position: relative;
+  z-index: 5;
+  border: 1px solid rgba(255, 111, 0, 0.1);
+}
+
+.info-box h2 {
+  color: var(--primary);
+  font-size: 1.9rem;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  font-weight: 600;
+}
+
+.info-box p {
+  font-size: 1.1rem;
+  color: var(--text-light);
+  line-height: 1.7;
+}
+
+/* ================= TIMELINE SECTION ================= */
+.timeline-container {
+  max-width: 900px;
+  margin: 0 auto 50px;
+  padding: 0 30px;
+}
+
+.timeline-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.timeline-header h2 {
+  font-size: 2.3rem;
+  color: var(--primary);
+  margin-bottom: 12px;
+  font-weight: 700;
+}
+
+.timeline-header p {
+  font-size: 1.15rem;
+  color: var(--text-light);
+  font-weight: 300;
+}
+
+/* TIMELINE */
+.timeline {
+  position: relative;
+}
+
+.timeline::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: linear-gradient(to bottom, var(--primary), var(--primary-light));
+}
+
+/* DAY CARDS */
+.day {
+  position: relative;
+  margin-bottom: 50px;
+  width: 46%;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeInUp 0.6s forwards;
+}
+
+.day:nth-child(odd) {
+  left: 0;
+  padding-right: 60px;
+  text-align: right;
+}
+
+.day:nth-child(even) {
+  left: 54%;
+  padding-left: 60px;
+}
+
+/* TIMELINE DOTS */
+.day::before {
+  content: "";
+  position: absolute;
+  top: 40px;
+  width: 20px;
+  height: 20px;
+  background: var(--white);
+  border: 5px solid var(--primary);
+  border-radius: 50%;
+  z-index: 10;
+  box-shadow: 0 0 0 6px rgba(255, 111, 0, 0.15);
+}
+
+.day:nth-child(odd)::before {
+  right: -10px;
+}
+
+.day:nth-child(even)::before {
+  left: -10px;
+}
+
+/* DAY CONTENT */
+.day-content {
+  background: var(--white);
+  padding: 28px;
+  border-radius: 16px;
+  box-shadow: 0 8px 25px var(--shadow);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(255, 111, 0, 0.08);
+}
+
+.day-content:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 15px 35px var(--shadow-dark);
+}
+
+/* DAY HEADER */
+.day-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  gap: 15px;
+}
+
+.day-number {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 46px;
+  background: var(--primary);
+  color: white;
+  border-radius: 50%;
+  font-size: 1.3rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.day-title {
+  font-size: 1.6rem;
+  color: var(--primary);
+  margin: 0;
+  font-weight: 600;
+}
+
+/* DAY DETAILS */
+.day-details {
+  margin-top: 5px;
+}
+
+.place-name {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  line-height: 1.3;
+}
+
+.place-name i {
+  color: var(--primary);
+  font-size: 1.4rem;
+}
+
+.place-description {
+  color: var(--text-light);
+  font-size: 1.1rem;
+  margin-bottom: 22px;
+  line-height: 1.7;
+  font-weight: 400;
+}
+
+.journey-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 18px;
+  background: var(--secondary-light);
+  color: var(--secondary);
+  font-size: 0.95rem;
+  font-weight: 600;
+  border-radius: 20px;
+  border: 1px solid rgba(46, 125, 50, 0.1);
+}
+
+/* ================= NEXT BUTTON ================= */
+.next-btn {
+  text-align: center;
+  margin: 50px auto 80px;
+  max-width: 450px;
+}
+
+.next-btn button {
+  background: linear-gradient(to right, var(--primary), var(--primary-dark));
+  color: white;
+  font-size: 1.2rem;
+  padding: 16px 40px;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin: 0 auto;
+  box-shadow: 0 8px 20px rgba(255, 111, 0, 0.25);
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.next-btn button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 30px rgba(255, 111, 0, 0.35);
+}
+
+/* ================= ANIMATIONS ================= */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 900px) {
+  .timeline-container {
+    padding: 0 20px;
+  }
+  
+  .day {
+    width: 48%;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero {
+    height: 50vh;
+  }
+  
+  .hero-text h1 {
+    font-size: 2.5rem;
+  }
+  
+  .hero-text p {
+    font-size: 1.2rem;
+  }
+  
+  .info-box {
+    margin: -20px 20px 40px;
+    padding: 22px 25px;
+  }
+  
+  .timeline::before {
+    left: 30px;
+  }
+  
+  .day {
+    width: 100%;
+    left: 0 !important;
+    padding-left: 70px !important;
+    padding-right: 20px !important;
+    text-align: left !important;
+    margin-bottom: 40px;
+  }
+  
+  .day:nth-child(odd)::before,
+  .day:nth-child(even)::before {
+    left: 20px;
+    right: auto;
+  }
+  
+  .day-content {
+    padding: 24px;
+  }
+  
+  .place-name {
+    font-size: 1.6rem;
+  }
+  
+  .next-btn {
+    margin: 40px 20px 60px;
+  }
+  
+  .next-btn button {
+    width: 100%;
+    max-width: 320px;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-text h1 {
+    font-size: 2.2rem;
+  }
+  
+  .timeline-header h2 {
+    font-size: 2rem;
+  }
+  
+  .day-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  
+  .day-number {
+    width: 42px;
+    height: 42px;
+    font-size: 1.2rem;
+  }
+  
+  .day-title {
+    font-size: 1.4rem;
+  }
+  
+  .place-name {
+    font-size: 1.5rem;
+  }
+}
+:root{
+  --green-dark:#0f2f1f;
+  --green-main:#1f6f4a;
+  --green-light:#7ED957;
+  --glass:rgba(255,255,255,0.08);
+  --glass-border:rgba(255,255,255,0.18);
+  --text:#ffffff;
+  --muted:rgba(255,255,255,0.75);
+}
+
+/* RESET */
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:'Segoe UI',system-ui,sans-serif;
+}
+
+body{
+  background:
+    radial-gradient(circle at top left,#1f6f4a,#0b1e15 45%,#000 100%);
+  color:var(--text);
+  min-height:100vh;
+}
+
+/* ================= HERO ================= */
+.hero{
+  height:55vh;
+  background-size:cover;
+  background-position:center;
+  position:relative;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+.hero::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(
+    135deg,
+    rgba(0,0,0,0.9),
+    rgba(0,0,0,0.45)
+  );
+}
+
+.hero-text{
+  position:relative;
+  text-align:center;
+  padding:0 25px;
+  animation:fadeInUp 1s ease;
+}
+
+.hero-text h1{
+  font-size:3.1rem;
+  font-weight:900;
+  color:var(--green-light);
+  text-shadow:0 6px 25px rgba(0,0,0,0.8);
+}
+
+.hero-text p{
+  margin-top:10px;
+  font-size:1.2rem;
+  color:var(--muted);
+}
+
+.hero-badge{
+  display:inline-block;
+  margin-top:15px;
+  padding:10px 26px;
+  border-radius:30px;
+  background:rgba(126,217,87,0.2);
+  border:1px solid var(--green-light);
+  color:var(--green-light);
+  font-weight:800;
+}
+
+/* ================= INFO ================= */
+.info-box{
+  max-width:900px;
+  margin:-45px auto 70px;
+  background:var(--glass);
+  backdrop-filter:blur(18px);
+  border:1px solid var(--glass-border);
+  border-radius:30px;
+  padding:34px 42px;
+  text-align:center;
+  box-shadow:0 30px 90px rgba(0,0,0,0.75);
+}
+
+.info-box h2{
+  color:var(--green-light);
+  font-size:2rem;
+  margin-bottom:10px;
+}
+
+.info-box p{
+  color:var(--muted);
+  font-size:1.1rem;
+}
+
+/* ================= TIMELINE ================= */
+.timeline-container{
+  max-width:1050px;
+  margin:0 auto 90px;
+  padding:0 25px;
+}
+
+.timeline-header{
+  text-align:center;
+  margin-bottom:55px;
+}
+
+.timeline-header h2{
+  font-size:2.4rem;
+  color:var(--green-light);
+}
+
+.timeline-header p{
+  color:var(--muted);
+}
+
+.timeline{
+  position:relative;
+}
+
+.timeline::before{
+  content:"";
+  position:absolute;
+  left:50%;
+  transform:translateX(-50%);
+  top:0;
+  bottom:0;
+  width:4px;
+  background:linear-gradient(
+    to bottom,
+    var(--green-light),
+    rgba(31,111,74,0.25)
+  );
+}
+
+/* ================= DAY CARDS ================= */
+.day{
+  width:46%;
+  position:relative;
+  margin-bottom:65px;
+  opacity:0;
+  transform:translateY(30px);
+  animation:fadeInUp 0.7s forwards;
+}
+
+.day:nth-child(odd){
+  text-align:right;
+  padding-right:75px;
+}
+
+.day:nth-child(even){
+  left:54%;
+  padding-left:75px;
+}
+
+.day::before{
+  content:"";
+  position:absolute;
+  top:45px;
+  width:22px;
+  height:22px;
+  background:#000;
+  border:4px solid var(--green-light);
+  border-radius:50%;
+  box-shadow:0 0 0 8px rgba(126,217,87,0.25);
+}
+
+.day:nth-child(odd)::before{ right:-11px; }
+.day:nth-child(even)::before{ left:-11px; }
+
+/* ================= DAY CONTENT ================= */
+.day-content{
+  background:var(--glass);
+  backdrop-filter:blur(18px);
+  border:1px solid var(--glass-border);
+  border-radius:28px;
+  padding:32px;
+  box-shadow:0 35px 90px rgba(0,0,0,0.75);
+  transition:0.35s ease;
+}
+
+.day-content:hover{
+  transform:translateY(-10px);
+  box-shadow:0 45px 120px rgba(0,0,0,0.9);
+}
+
+/* HEADER */
+.day-header{
+  display:flex;
+  align-items:center;
+  gap:16px;
+  margin-bottom:18px;
+}
+
+.day-number{
+  width:50px;
+  height:50px;
+  background:linear-gradient(135deg,var(--green-light),var(--green-main));
+  color:#000;
+  font-weight:900;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.day-title{
+  font-size:1.6rem;
+  color:var(--green-light);
+  font-weight:800;
+}
+
+/* DETAILS */
+.place-name{
+  font-size:1.85rem;
+  font-weight:900;
+  margin-bottom:15px;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  color: white;
+}
+
+.place-name i{
+  color:var(--green-light);
+}
+
+.place-description{
+  color:var(--muted);
+  font-size:1.1rem;
+  margin-bottom:20px;
+}
+
+.journey-badge{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:10px 22px;
+  border-radius:22px;
+  background:rgba(126,217,87,0.2);
+  color:var(--green-light);
+  border:1px solid var(--green-light);
+  font-weight:800;
+}
+
+/* ================= NEXT BUTTON ================= */
+.next-btn{
+  text-align:center;
+  margin:90px auto;
+}
+
+.next-btn button{
+  background:linear-gradient(135deg,var(--green-light),var(--green-main));
+  color:#000;
+  font-size:1.25rem;
+  padding:18px 48px;
+  border:none;
+  border-radius:50px;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  gap:14px;
+  font-weight:900;
+  transition:0.35s;
+}
+
+.next-btn button:hover{
+  transform:translateY(-4px) scale(1.05);
+  box-shadow:0 22px 55px rgba(126,217,87,0.6);
+}
+
+/* ================= ANIMATION ================= */
+@keyframes fadeInUp{
+  from{opacity:0;transform:translateY(30px);}
+  to{opacity:1;transform:translateY(0);}
+}
+
+/* ================= MOBILE ================= */
+@media(max-width:768px){
+  .timeline::before{ left:30px; }
+
+  .day{
+    width:100%;
+    left:0!important;
+    padding-left:80px!important;
+    padding-right:20px!important;
+    text-align:left!important;
+  }
+
+  .day::before{ left:20px!important; }
+
+  .hero-text h1{ font-size:2.4rem; }
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="hero" id="hero">
+  <div class="hero-text">
+    <h1 id="stateTitle"></h1>
+    <p id="durationText"></p>
+    <div class="hero-badge" id="placesCount"></div>
+  </div>
+</div>
+
+<div class="info-box">
+  <h2><i class="fas fa-route"></i> Your Planned Journey</h2>
+  <p>Carefully curated places based on your selected duration. Each destination is thoughtfully selected to give you the best experience.</p>
+</div>
+
+<div class="timeline-container">
+  <div class="timeline-header">
+    <h2>Your Itinerary</h2>
+    <p>Follow your journey day by day</p>
+  </div>
+  
+  <div class="timeline" id="timeline"></div>
+</div>
+
+<div class="next-btn">
+  <button onclick="goToBudget()">
+    <i class="fas fa-coins"></i> Plan Your Budget
+    <i class="fas fa-arrow-right"></i>
+  </button>
+</div>
+
+<script>
+/* =======================
+   READ SHARED DATA
+======================= */
+const data = JSON.parse(localStorage.getItem("selectedStatePackage"));
+
+if (!data) {
+  document.body.innerHTML = `
+    <div style="text-align:center; margin-top:100px; padding:20px;">
+      <h1 style="color:#ff6f00; font-size:2.5rem; margin-bottom:20px;"><i class="fas fa-exclamation-triangle"></i> No Trip Selected</h1>
+      <p style="font-size:1.2rem; margin-bottom:30px;">Please go back and select a travel package first.</p>
+      <button onclick="window.history.back()" style="background:#ff6f00; color:white; border:none; padding:12px 30px; border-radius:30px; font-size:1.1rem; cursor:pointer;">
+        <i class="fas fa-arrow-left"></i> Go Back
+      </button>
+    </div>
+  `;
+  throw new Error("No state data");
+}
+
+/* =======================
+   HEADER CONTENT
+======================= */
+document.getElementById("stateTitle").innerText = `${data.state} Adventure`;
+document.getElementById("durationText").innerText = `A ${data.duration} journey through the best of ${data.state}`;
+document.getElementById("placesCount").innerText = `${data.places.length} Amazing Destinations`;
+
+/* =======================
+   HERO BACKGROUND
+======================= */
+const hero = document.getElementById("hero");
+const stateImage = `images/states/${data.state.toLowerCase().replace(/\s+/g, "")}.jpg`;
+hero.style.backgroundImage = `url('${stateImage}'), url('images/default-state.jpg')`;
+
+/* =======================
+   TIMELINE GENERATION
+======================= */
+const timeline = document.getElementById("timeline");
+
+// Add delay for staggered animation
+let animationDelay = 0;
+
+data.places.forEach((place, index) => {
+  const div = document.createElement("div");
+  div.className = "day";
+  div.style.animationDelay = `${animationDelay}s`;
+  animationDelay += 0.15;
+  
+  // Create description based on place name
+  const description = getPlaceDescription(place, data.state);
+  
+  div.innerHTML = `
+    <div class="day-content">
+      <div class="day-header">
+        <div class="day-number">${index + 1}</div>
+        <h3 class="day-title">Day ${index + 1}</h3>
+      </div>
+      <div class="day-details">
+        <div class="place-name">
+          <i class="fas fa-map-marker-alt"></i>
+          ${place}
+        </div>
+        <p class="place-description">${description}</p>
+        <span class="journey-badge">
+          <i class="fas fa-check-circle"></i> Included in your journey
+        </span>
+      </div>
+    </div>
+  `;
+  
+  timeline.appendChild(div);
+});
+
+/* =======================
+   HELPER FUNCTION FOR DESCRIPTIONS
+======================= */
+function getPlaceDescription(place, state) {
+  const descriptions = [
+    `Explore the beauty and culture of ${place}, one of the most remarkable destinations in ${state}.`,
+    `Immerse yourself in the unique experiences that ${place} has to offer during your ${state} adventure.`,
+    `Discover the hidden gems and popular attractions at ${place}, a must-visit location in ${state}.`,
+    `Experience the local cuisine, traditions, and landscapes of ${place} on your ${state} journey.`,
+    `Enjoy a full day of adventure and relaxation at ${place}, carefully selected for your ${state} trip.`
+  ];
+  
+  // Return a random description for variety
+  return descriptions[Math.floor(Math.random() * descriptions.length)];
+}
+
+/* =======================
+   NEXT STEP FUNCTION
+======================= */
+function goToBudget() {
+  const data = JSON.parse(localStorage.getItem("selectedStatePackage"));
+
+  localStorage.setItem("bookingDetails", JSON.stringify({
+    type: "state",
+    title: `${data.state} Adventure`,
+    subtitle: `${data.state} State Package Booked`,
+    sourcePage: "statebooking.html",
+    duration: data.duration,
+    places: data.places
+  }));
+
+  window.location.href = "budgetplanner.html";
+}
+
+/* =======================
+   ADD SCROLL ANIMATION
+======================= */
+document.addEventListener('DOMContentLoaded', function() {
+  const days = document.querySelectorAll('.day');
+  
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, { threshold: 0.1 });
+  
+  days.forEach(day => observer.observe(day));
+});
+</script>
+
+</body>
+</html>

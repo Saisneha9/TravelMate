@@ -1,0 +1,1229 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Travel Planner</title>
+    <link rel="icon" href="Untitled_design-removebg-preview.png" type="image/x-icon">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <style>
+        :root {
+            --green-dark: #0f2f1f;
+            --green-main: #1f6f4a;
+            --green-light: #24d842;
+            --black: #000;
+            --glass: rgba(255, 255, 255, 0.12);
+            --text: #ffffff;
+        }
+
+
+        /* RESET */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+
+        /* BODY */
+        body {
+            background: #000;
+            color: var(--text);
+            overflow-x: hidden; /* Prevent horizontal scroll when menu opens */
+        }
+
+        /* --- SIDEBAR MENU STYLES --- */
+        .sidenav {
+            height: 100%;
+            width: 0;
+            position: fixed;
+            z-index: 2000; /* On top of everything */
+            top: 0;
+            left: 0;
+            background-color: #050505;
+            overflow-x: hidden;
+            transition: 0.5s;
+            padding-top: 60px;
+            border-right: 1px solid var(--green-main);
+            box-shadow: 5px 0 15px rgba(36, 216, 66, 0.1);
+        }
+
+        .sidenav a {
+            padding: 10px 10px 10px 32px;
+            text-decoration: none;
+            font-size: 18px;
+            color: #818181;
+            display: block;
+            transition: 0.3s;
+            border-bottom: 1px solid #1a1a1a;
+        }
+
+        .sidenav a:hover {
+            color: var(--green-light);
+            background: rgba(36, 216, 66, 0.05);
+            padding-left: 40px; /* Slide effect */
+        }
+
+        .sidenav .closebtn {
+            position: absolute;
+            top: 0;
+            right: 25px;
+            font-size: 36px;
+            margin-left: 50px;
+            border-bottom: none;
+        }
+
+        .menu-title {
+            color: var(--green-light);
+            padding: 0 0 20px 32px;
+            font-size: 24px;
+            font-weight: bold;
+            border-bottom: 1px solid var(--green-main);
+            margin-bottom: 10px;
+        }
+
+        /* Menu Icon (Hamburger) */
+        .menu-icon {
+            font-size: 30px;
+            cursor: pointer;
+            color: var(--text);
+            margin-right: 20px;
+            transition: 0.3s;
+        }
+        
+        .menu-icon:hover {
+            color: var(--green-light);
+        }
+
+        /* HEADER */
+        .header {
+            position: absolute;
+            top: 0;
+            width: 100%;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+        }
+
+        .header span {
+            font-size: 30px;
+            font-weight: 900;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header img {
+            height: 50px;
+        }
+
+        /* BUTTONS */
+        .headbutton {
+            background: linear-gradient(135deg, var(--green-light), var(--green-main));
+            color: #000;
+            border: none;
+            padding: 12px 26px;
+            border-radius: 30px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+        }
+
+        .headbutton:hover {
+            background: #000;
+            color: #fff;
+        }
+
+        /* NAV */
+        .nav {
+            position: absolute;
+            top: 90px;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            z-index: 100;
+        }
+
+        .navanchor {
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(12px);
+            padding: 14px 40px;
+            border-radius: 40px;
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav a {
+            color: #fff;
+            font-weight: 700;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        .nav a:hover {
+            color: var(--green-light);
+        }
+
+        /* SOS */
+        .SOSBUTTON {
+            margin-left: 40px;
+            background: #b00000;
+            color: #fff;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 30px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        /* HERO */
+        .hero {
+            height: 100vh;
+            background: url("hero-hiker.jpg.png") center/cover no-repeat;
+            display: flex;
+            align-items: center;
+            padding: 160px 80px;
+            position: relative;
+        }
+
+        .hero::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.3));
+        }
+
+        .hero-content {
+            position: relative;
+            max-width: 600px;
+        }
+
+        .hero-title {
+            font-size: 72px;
+            font-weight: 900;
+            line-height: 1;
+        }
+
+        .hero-title span {
+            color: var(--green-light);
+        }
+
+        .hero-subtitle {
+            font-size: 26px;
+            margin-top: 15px;
+            opacity: 0.9;
+        }
+
+        /* DEAL */
+        .deals {
+            background: linear-gradient(135deg, #0c2e1f, #000);
+            padding: 60px;
+            text-align: center;
+        }
+
+        .deals h2 {
+            font-size: 48px;
+            color: var(--green-light);
+        }
+
+        /* ARMA SECTION */
+        .arma-section {
+            margin: 100px auto 20px auto;
+            max-width: 1200px;
+            border-radius: 30px;
+            background: url("scrollimage.jpeg") center/cover;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.7);
+        }
+
+        .arma-overlay {
+            background: rgba(0, 0, 0, 0.75);
+            padding: 80px;
+            border-radius: 30px;
+        }
+
+        .title {
+            text-align: center;
+            font-size: 48px;
+            color: var(--green-light);
+        }
+
+        .description {
+            text-align: center;
+            max-width: 800px;
+            margin: 20px auto 60px;
+            opacity: 0.85;
+        }
+
+        .point {
+            /* GLOSSY EFFECT SETTINGS */
+            background: rgba(255, 255, 255, 0.05);
+            /* Very transparent white */
+            backdrop-filter: blur(10px);
+            /* The "frosted glass" blur */
+            -webkit-backdrop-filter: blur(10px);
+            /* For Safari support */
+
+            /* BORDERS FOR SHINE */
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-top: 1px solid rgba(255, 255, 255, 0.3);
+            /* Top highlight makes it look 3D */
+            border-left: 1px solid rgba(255, 255, 255, 0.3);
+            /* Left highlight */
+
+            /* SHADOW */
+            box-shadow: 0 25px 45px rgba(0, 0, 0, 0.3);
+            /* Deep shadow for depth */
+
+            /* REST OF YOUR LAYOUT (Keep these) */
+            border-radius: 20px;
+            padding: 20px;
+            min-height: 260px;
+            max-height: 260px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-evenly;
+            transition: all 0.4s ease;
+        }
+
+        /* HOVER EFFECT - Makes it glow slightly when you touch it */
+        .point:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.1);
+            /* Slightly brighter on hover */
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 40px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .svg-number {
+            margin-top: 10px;
+        }
+
+        .point p {
+            font-size: 22px;
+            font-weight: 700;
+            text-align: center;
+            line-height: 1.4;
+            margin-top: 10px;
+        }
+
+        /* EXPLORE BUTTON */
+        .btn-53,
+        .btn-53 *,
+        .btn-53 :after,
+        .btn-53 :before,
+        .btn-53:after,
+        .btn-53:before {
+            border: 0 solid;
+            box-sizing: border-box;
+        }
+
+        .btn-53 {
+            -webkit-tap-highlight-color: transparent;
+            -webkit-appearance: button;
+            background-color: var(--green-light);
+            background-image: none;
+            color: #000000;
+            cursor: pointer;
+            font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+                Segoe UI, Roboto, Helvetica Neue, Arial, Noto Sans, sans-serif,
+                Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
+            font-size: 90%;
+            line-height: 1.5;
+            margin: 0;
+            -webkit-mask-image: -webkit-radial-gradient(#000, #fff);
+            padding: 0;
+        }
+
+        .btn-53:disabled {
+            cursor: default;
+        }
+
+        .btn-53:-moz-focusring {
+            outline: auto;
+        }
+
+        .btn-53 svg {
+            display: block;
+            vertical-align: middle;
+        }
+
+        .btn-53 [hidden] {
+            display: none;
+        }
+
+        .btn-53 {
+            border: 1px solid black;
+            border-radius: 999px;
+            box-sizing: border-box;
+            display: block;
+            font-weight: 900;
+            overflow: hidden;
+            padding: 0.65rem 2rem;
+            position: relative;
+            text-transform: uppercase;
+        }
+
+        .btn-53 .original {
+            background: #fff;
+            color: #000;
+            display: grid;
+            inset: 0;
+            place-content: center;
+            position: absolute;
+            transition: transform 0.2s cubic-bezier(0.87, 0, 0.13, 1);
+        }
+
+        .btn-53:hover .original {
+            transform: translateY(100%);
+        }
+
+        .btn-53 .letters {
+            display: inline-flex;
+        }
+
+        .btn-53 span {
+            opacity: 0;
+            transform: translateY(-15px);
+            transition: transform 0.3s cubic-bezier(0.87, 0, 0.13, 1), opacity 0.2s;
+        }
+
+        .btn-53 span:nth-child(2n) {
+            transform: translateY(15px);
+        }
+
+        .btn-53:hover span {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .btn-53:hover span:nth-child(2) {
+            transition-delay: 0.2s;
+        }
+
+        .btn-53:hover span:nth-child(3) {
+            transition-delay: 0.3s;
+        }
+
+        .btn-53:hover span:nth-child(4) {
+            transition-delay: 0.4s;
+        }
+
+        .btn-53:hover span:nth-child(5) {
+            transition-delay: 0.5s;
+        }
+
+        .btn-53:hover span:nth-child(6) {
+            transition-delay: 0.6s;
+        }
+
+        .btn-53:hover span:nth-child(7) {
+            transition-delay: 0.7s;
+        }
+
+        /* FOOTER */
+        .footer {
+            background: #000;
+            padding: 80px 40px;
+            margin-top: 100px;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+        }
+
+        .footer-column h3 {
+            color: var(--green-light);
+            margin-bottom: 20px;
+        }
+
+        .footer-column p,
+        .footer-column li {
+            opacity: 0.8;
+        }
+
+        .footer-links li {
+            list-style: none;
+            margin-bottom: 10px;
+        }
+
+        .footer-links a {
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .social-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--green-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            margin-top: 50px;
+            opacity: 0.6;
+        }
+
+        /* Grid layout */
+        .gridarticles {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            padding: 40px 80px;
+        }
+
+        /* Card */
+        .gridarticles .item {
+            background: rgba(79, 127, 58, 0.92);
+            /* forest green */
+            border: 2px solid #6A8E3F;
+            /* olive green border */
+            border-radius: 24px;
+            padding: 35px 30px;
+            text-align: center;
+            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.25);
+            transition: transform 0.35s ease, box-shadow 0.35s ease;
+        }
+
+        /* Hover effect */
+        .gridarticles .item:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 55px rgba(0, 0, 0, 0.35);
+        }
+
+        /* Logo images */
+        .gridarticles .item img {
+            max-height: 60px;
+            margin-bottom: 15px;
+            object-fit: contain;
+            filter: brightness(0) invert(1);
+            /* makes logos white */
+        }
+
+        /* Title */
+        .gridarticles .item h3 {
+            font-family: "Georgia", serif;
+            font-size: 20px;
+            font-weight: 700;
+            color: #F1F6EC;
+            /* soft off-white */
+            margin-bottom: 22px;
+        }
+
+        /* Button */
+        .gridarticles .item button {
+            background: #6A8E3F;
+            /* olive green */
+            color: #1B2A12;
+            border: none;
+            padding: 10px 26px;
+            border-radius: 14px;
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        /* Button hover */
+        .gridarticles .item button:hover {
+            background: #5E8F45;
+            transform: scale(1.05);
+        }
+
+        /* Remove underline */
+        .gridarticles a {
+            text-decoration: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .gridarticles {
+                grid-template-columns: 1fr;
+                padding: 30px;
+            }
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+            max-width: 1200px;
+            margin: 80px 30px;
+        }
+
+        .card-button {
+            margin-top: auto;
+            display: flex;
+            justify-content: center;
+        }
+
+        /* SCROLL TO TOP BUTTON */
+        #scrollToTopBtn {
+            position: fixed;
+            /* Stays in place while scrolling */
+            bottom: 30px;
+            right: 30px;
+            z-index: 999;
+            /* Ensures it is on top of everything */
+
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            /* Makes it circular */
+            border: none;
+
+            background: var(--green-light);
+            /* Your theme green */
+            color: #000;
+            font-size: 20px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+
+            opacity: 0;
+            /* Hidden by default */
+            pointer-events: none;
+            /* Unclickable when hidden */
+            transform: translateY(20px);
+            /* Pushed down slightly */
+            transition: all 0.3s ease;
+        }
+
+        /* This class is added by JS when we scroll down */
+        #scrollToTopBtn.show {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateY(0);
+        }
+
+        #scrollToTopBtn:hover {
+            background: var(--green-main);
+            /* Slightly lighter on hover */
+            transform: scale(1.1);
+            /* Grow effect */
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+</head>
+
+<body>
+
+    <div id="mySidenav" class="sidenav">
+        <div class="menu-title">Menu</div>
+        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+        
+        <a href="originalpage.html"><i class="fas fa-home"></i> Home</a>
+        <a href="aboutusmain.html"><i class="fas fa-info-circle"></i> About Us</a>
+        <a href="paymentpage.html"><i class="fas fa-credit-card"></i> Payment</a>
+        <a href="contactus.html"><i class="fas fa-envelope"></i> Contact Us</a>
+        
+        <div style="border-top: 1px solid #1a1a1a; margin-top: 10px;"></div>
+        <div class="menu-title" style="font-size: 18px; margin-top: 15px;">Tools & Features</div>
+
+        <a href="mapsapi.html"><i class="fas fa-map-marker-alt"></i> Location Finder</a>
+        <a href="hotel_test.html"><i class="fas fa-hotel"></i> Hotel Finder</a>
+        <a href="Indiapackages.html"><i class="fas fa-suitcase"></i> Getaway Packages</a>
+        <a href="7won.html"><i class="fas fa-globe"></i> 7 Wonders</a>
+        <a href="currency calculator.html"><i class="fas fa-calculator"></i> Currency Converter</a>
+        <a href="flight.html"><i class="fas fa-plane"></i> Check Flights</a>
+        <a href="weather.html"><i class="fas fa-cloud-sun"></i> Weather Updates</a>
+        <a href="places.html"><i class="fas fa-archway"></i> Explore India</a>
+        <a href="http://localhost:9000"><i class="fas fa-wallet"></i> Budget Checker</a>
+    </div>
+
+    <div class="header">
+        <div class="header-left">
+            <span class="menu-icon" onclick="openNav()">&#9776;</span>
+            
+            <span style="font-family:Verdana, Geneva, Tahoma, sans-serif;">
+                <img src="Untitled_design-removebg-preview.png" height="50"> TravelMate
+            </span>
+        </div>
+
+        <div class="signup-container">
+            <a href="login.html"><button class="headbutton">Sign Up / Login
+                    <div class="arrow-wrapper">
+                        <div class="arrow"></div>
+                    </div>
+                </button></a>
+            <a href="index.html"><button class="SOSBUTTON"> <i class="fas fa-shield-alt"></i> SOS</button> </a>
+        </div>
+    </div>
+    <div class="nav">
+
+        <div class="navanchor"
+            style="background-color: rgba(255,255,255,0.12);padding-left:20px;padding-right:20px;padding-top: 15px;padding-bottom: 15px;border-radius:25px;box-shadow:0px 2px 2px 2px #0000007b;">
+            <a href="originalpage.html">Home</a>
+            <a href="aboutusmain.html">About Us</a>
+            <a href="paymentpage.html">Payment</a>
+            <a href="contactus.html">Contact Us</a>
+        </div>
+
+    </div>
+    <div class="hero">
+        <div class="hero-content">
+            <h1 class="hero-title">
+                It’s Time To <br>
+                <span>TRAVEL</span>
+            </h1>
+            <p class="hero-subtitle">
+                And explore the world
+            </p>
+
+
+        </div>
+    </div>
+
+
+    <div class="deals">
+        <h2>20% OFF</h2>
+        <p>Use Voucher Code <strong>TravelSale12</strong> for discounts.</p>
+    </div>
+
+    <div class="arma-section">
+        <div class="arma-overlay">
+            <div class="container">
+                <h1 class="title" style="text-align: center;">Welcome to TravelMate<br></h1><br>
+                <p class="description"
+                    style="text-align: center;font-weight:300;font-family:Arial, Helvetica, sans-serif">We believe
+                    travel should be stress-free, smart, and tailored
+                    to you! Whether you’re exploring new destinations or planning a last-minute trip, TravelMate is here
+                    to
+                    simplify your journey</p>
+                <div class="feature-grid">
+                    <div class="point">
+                        <div class="svg-number"><img src="number-one.png" alt="1" height="30"></div>
+                        <p style="font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;"><span
+                                style="font-size: 22px;">Location Finder </span></p><br>
+                        <center>
+                            <a href="mapsapi.html">
+                                <div class="card-button"><button class="btn-53">
+                                        <div class="original">Explore</div>
+                                        <div class="letters">
+
+                                            <span>E</span>
+                                            <span>x</span>
+                                            <span>p</span>
+                                            <span>l</span>
+                                            <span>O</span>
+                                            <span>r</span>
+                                            <span>e</span>
+                                        </div>
+                                    </button></div>
+                            </a>
+                        </center>
+                    </div>
+
+
+                    <div class="point">
+                        <div class="svg-number"><img src="number-2.png" alt="1" height="30"></div>
+                        <p style="font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;"><span
+                                style="font-size: 22px;">Intelligent Hotel Finder</span></p><br>
+                        <center>
+                            <a href="hotel_test.html">
+                                <div class="card-button"><button class="btn-53">
+                                        <div class="original">Explore</div>
+                                        <div class="letters">
+
+                                            <span>E</span>
+                                            <span>x</span>
+                                            <span>p</span>
+                                            <span>l</span>
+                                            <span>O</span>
+                                            <span>r</span>
+                                            <span>e</span>
+                                        </div>
+                                    </button></div>
+                            </a>
+                        </center>
+                    </div>
+
+                    <div class="point">
+                        <div class="svg-number"><img src="number-3.png" alt="1" height="30"></div>
+                        <p style="font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;"><span
+                                style="font-size: 22px;">Find Your Perfect Getaway</span>
+                        </p><br>
+                        <center>
+                            <a href="Indiapackages.html">
+                                <div class="card-button"> <button class="btn-53">
+                                        <div class="original">Explore</div>
+                                        <div class="letters">
+
+                                            <span>E</span>
+                                            <span>x</span>
+                                            <span>p</span>
+                                            <span>l</span>
+                                            <span>O</span>
+                                            <span>r</span>
+                                            <span>e</span>
+                                        </div>
+                                    </button></div>
+                            </a>
+                        </center>
+                    </div>
+                </div>
+
+            </div>
+
+
+            <div class="feature-grid">
+                <div class="point">
+                    <div class="svg-number"><img src="number-one.png" alt="1" height="30"></div>
+                    <p style="font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;"><span
+                            style="font-size: 22px;">7 Wonders</span></p><br>
+                    <center>
+                        <a href="7won.html">
+                            <div class="card-button"><button class="btn-53">
+                                    <div class="original">Explore</div>
+                                    <div class="letters">
+
+                                        <span>E</span>
+                                        <span>x</span>
+                                        <span>p</span>
+                                        <span>l</span>
+                                        <span>O</span>
+                                        <span>r</span>
+                                        <span>e</span>
+                                    </div>
+                                </button></div>
+                        </a>
+                    </center>
+                </div>
+
+                <div class="point">
+                    <div class="svg-number"><img src="number-2.png" alt="2" height="30"></div>
+                    <p style="font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;"><span
+                            style="font-size: 22px;">Currency Converter</span></p><br>
+                    <center>
+                        <a href="currency calculator.html">
+                            <div class="card-button"><button class="btn-53">
+                                    <div class="original">Convert</div>
+                                    <div class="letters">
+
+                                        <span>C</span>
+                                        <span>o</span>
+                                        <span>n</span>
+                                        <span>v</span>
+                                        <span>e</span>
+                                        <span>r</span>
+                                        <span>t</span>
+                                    </div>
+                                </button></div>
+                        </a>
+                    </center>
+                </div>
+
+                <div class="point">
+                    <div class="svg-number"><img src="number-3.png" alt="3" height="30"></div>
+                    <p style="font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;"><span
+                            style="font-size: larger;">Check Flights</span>
+                    </p><br>
+                    <center>
+                        <a href="flight.html">
+                            <div class="card-button"><button class="btn-53">
+                                    <div class="original">Explore</div>
+                                    <div class="letters">
+
+                                        <span>E</span>
+                                        <span>x</span>
+                                        <span>p</span>
+                                        <span>l</span>
+                                        <span>O</span>
+                                        <span>r</span>
+                                        <span>e</span>
+                                    </div>
+                                </button></div>
+                        </a>
+                    </center>
+                </div>
+            </div>
+        </div>
+    </div>
+    <center>
+        <div style="text-align: center; font-family: Arial, sans-serif;" class="deals">
+            <div style="margin-bottom: 20px;">
+                <a href="weather.html"><button style="
+                    padding: 12px 24px;
+                    background-color:var(--green-light);
+                    color: rgb(12, 5, 5);
+                    border: none;
+                    border-radius: 20px;
+                    font-size: 18px;
+                    cursor: pointer;
+                ">Check weather updates</button></a>
+            </div>
+
+            <div style="display: flex; justify-content: center; gap: 20px;">
+                <a href="places.html"><button style="
+                    padding: 10px 20px;
+                    background-color:var(--green-light);
+                    color: rgb(14, 6, 6);
+                    border: none;
+                    border-radius: 20px;
+                    font-size: 18px;
+                    cursor: pointer;
+                ">Explore India</button></a>
+
+                <a href=" http://localhost:9000"><button style="
+                    padding: 10px 20px;
+                    background-color: var(--green-light);
+                    color: rgb(14, 12, 12);
+                    border: none;
+                    border-radius: 20px;
+                    font-size: 18px;
+                    cursor: pointer;
+                ">Budget checker</button></a>
+            </div>
+        </div>
+    </center>
+    </div>
+
+    <script>
+        // SIDEBAR SCRIPTS
+        function openNav() {
+            document.getElementById("mySidenav").style.width = "280px";
+        }
+
+        function closeNav() {
+            document.getElementById("mySidenav").style.width = "0";
+        }
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    anime({
+                        targets: entry.target,
+                        opacity: [0, 1],
+                        translateY: [30, 0],
+                        duration: 1500,
+                        easing: 'easeOutExpo',
+                        delay: anime.stagger(1000)
+                    });
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        document.querySelectorAll('.title, .description, .grid, .point, .button-container,.gridarticles').forEach(element => {
+            observer.observe(element);
+        });
+    </script>
+
+
+    <br><br>
+    <hr>
+    <br>
+
+    <div class="gridarticles">
+        <div class="item">
+            <img src="forbesimages-removebg-preview.png" alt="Article 1">
+            <h3>Forbes travel guide</h3>
+            <a href="https://www.forbes.com/sites/alexledsom/2025/01/25/7-wonders-of-the-world-ancient-modern/"><button>Read
+                    More</button></a>
+        </div>
+
+        <div class="item">
+            <img src="best7finallogo-removebg-preview.png" alt="Article 2" height="100">
+            <h3>Guide to Traveling</h3>
+            <a href="https://www.best7.io/7-wonders-of-the-world-a-guide-to-traveling/"><button>Read More</button></a>
+        </div>
+
+        <div class="item">
+            <img src="finalnomadicmatt-removebg-preview.png" alt="Article 3">
+            <h3>Essential Travel Safety Tips </h3>
+            <a href="https://www.nomadicmatt.com/travel-safety-guide/"><button>Read More</button></a>
+        </div>
+    </div>
+
+    <br><br><br>
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>About Us</h3>
+                    <p style="margin-bottom: 20px; color: #333;">We make travel planning easy, personalized, and
+                        hassle-free! From itinerary suggestions to real-time recommendations, we help you explore the
+                        world stress-free. Plan smarter, travel better! 🚀
+                    </p>
+                    <div class="social-icons">
+                        <a href="#" class="social-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                viewBox="0 0 16 16">
+                                <path
+                                    d="M16 8.049c0-4.446-3.582-8.05-8-8.05C3.58 0-.002 3.603-.002 8.05c0 4.017 2.926 7.347 6.75 7.951v-5.625h-2.03V8.05H6.75V6.275c0-2.017 1.195-3.131 3.022-3.131.876 0 1.791.157 1.791.157v1.98h-1.009c-.993 0-1.303.621-1.303 1.258v1.51h2.218l-.354 2.326H9.25V16c3.824-.604 6.75-3.934 6.75-7.951z" />
+                            </svg>
+                        </a>
+                        <a href="#" class="social-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                viewBox="0 0 16 16">
+                                <path
+                                    d="M5.026 15c6.038 0 9.341-5.003 9.341-9.334 0-.14 0-.282-.006-.422A6.685 6.685 0 0 0 16 3.542a6.658 6.658 0 0 1-1.889.518 3.301 3.301 0 0 0 1.447-1.817 6.533 6.533 0 0 1-2.087.793A3.286 3.286 0 0 0 7.875 6.03a9.325 9.325 0 0 1-6.767-3.429 3.289 3.289 0 0 0 1.018 4.382A3.323 3.323 0 0 1 .64 6.575v.045a3.288 3.288 0 0 0 2.632 3.218 3.203 3.203 0 0 1-.865.115 3.23 3.23 0 0 1-.614-.057 3.283 3.283 0 0 0 3.067 2.277A6.588 6.588 0 0 1 .78 13.58a6.32 6.32 0 0 1-.78-.045A9.344 9.344 0 0 0 5.026 15z" />
+                            </svg>
+                        </a>
+                        <a href="#" class="social-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                viewBox="0 0 16 16">
+                                <path
+                                    d="M8 0C5.829 0 5.556.01 4.703.048 3.85.088 3.269.222 2.76.42a3.917 3.917 0 0 0-1.417.923A3.927 3.927 0 0 0 .42 2.76C.222 3.268.087 3.85.048 4.7.01 5.555 0 5.827 0 8.001c0 2.172.01 2.444.048 3.297.04.852.174 1.433.372 1.942.205.526.478.972.923 1.417.444.445.89.719 1.416.923.51.198 1.09.333 1.942.372C5.555 15.99 5.827 16 8 16s2.444-.01 3.298-.048c.851-.04 1.434-.174 1.943-.372a3.916 3.916 0 0 0 1.416-.923c.445-.445.718-.891.923-1.417.197-.509.332-1.09.372-1.942C15.99 10.445 16 10.173 16 8s-.01-2.445-.048-3.299c-.04-.851-.175-1.433-.372-1.941a3.926 3.926 0 0 0-.923-1.417A3.911 3.911 0 0 0 13.24.42c-.51-.198-1.092-.333-1.943-.372C10.443.01 10.172 0 7.998 0h.003zm-.717 1.442h.718c2.136 0 2.389.007 3.232.046.78.035 1.204.166 1.486.275.373.145.64.319.92.599.28.28.453.546.598.92.11.281.24.705.275 1.485.039.843.047 1.096.047 3.231s-.008 2.389-.047 3.232c-.035.78-.166 1.203-.275 1.485a2.47 2.47 0 0 1-.599.919c-.28.28-.546.453-.92.598-.28.11-.704.24-1.485.276-.843.038-1.096.047-3.232.047s-2.39-.009-3.233-.047c-.78-.036-1.203-.166-1.485-.276a2.478 2.478 0 0 1-.92-.598 2.48 2.48 0 0 1-.6-.92c-.109-.281-.24-.705-.275-1.485-.038-.843-.046-1.096-.046-3.233 0-2.136.008-2.388.046-3.231.036-.78.166-1.204.276-1.486.145-.373.319-.64.599-.92.28-.28.546-.453.92-.598.282-.11.705-.24 1.485-.276.738-.034 1.024-.044 2.515-.045v.002zm4.988 1.328a.96.96 0 1 0 0 1.92.96.96 0 0 0 0-1.92zm-4.27 1.122a4.109 4.109 0 1 0 0 8.217 4.109 4.109 0 0 0 0-8.217zm0 1.441a2.667 2.667 0 1 1 0 5.334 2.667 2.667 0 0 1 0-5.334z" />
+                            </svg>
+                        </a>
+                        <a href="#" class="social-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                viewBox="0 0 16 16">
+                                <path
+                                    d="M0 1.146C0 .513.526 0 1.175 0h13.65C15.474 0 16 .513 16 1.146v13.708c0 .633-.526 1.146-1.175 1.146H1.175C.526 16 0 15.487 0 14.854V1.146zm4.943 12.248V6.169H2.542v7.225h2.401zm-1.2-8.212c.837 0 1.358-.554 1.358-1.248-.015-.709-.52-1.248-1.342-1.248-.822 0-1.359.54-1.359 1.248 0 .694.521 1.248 1.327 1.248h.016zm4.908 8.212V9.359c0-.216.016-.432.08-.586.173-.431.568-.878 1.232-.878.869 0 1.216.662 1.216 1.634v3.865h2.401V9.25c0-2.22-1.184-3.252-2.764-3.252-1.274 0-1.845.7-2.165 1.193v.025h-.016a5.54 5.54 0 0 1 .016-.025V6.169h-2.4c.03.678 0 7.225 0 7.225h2.4z" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="footer-column">
+                    <h3>Quick Links</h3>
+                    <ul class="footer-links">
+                        <li>
+                            <a href="#">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                    viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd"
+                                        d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z" />
+                                </svg>
+                                Home
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                    viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd"
+                                        d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z" />
+                                </svg>
+                                Services
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                    viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd"
+                                        d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z" />
+                                </svg>
+                                Portfolio
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                    viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd"
+                                        d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z" />
+                                </svg>
+                                Blog
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                    viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd"
+                                        d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z" />
+                                </svg>
+                                FAQ
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="footer-column">
+                    <h3>Contact Us</h3>
+                    <ul class="contact-info">
+                        <li>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                viewBox="0 0 16 16">
+                                <path
+                                    d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z" />
+                            </svg>
+                            Amrita Vishwa Vidyapeetham, <br>Kuragallu
+                        </li>
+                        <li>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                viewBox="0 0 16 16">
+                                <path
+                                    d="M3.654 1.328a.678.678 0 0 0-1.015-.063L1.605 2.3c-.483.484-.661 1.169-.45 1.77a17.568 17.568 0 0 0 4.168 6.608 17.569 17.569 0 0 0 6.608 4.168c.601.211 1.286.033 1.77-.45l1.034-1.034a.678.678 0 0 0-.063-1.015l-2.307-1.794a.678.678 0 0 0-.58-.122l-2.19.547a1.745 1.745 0 0 1-1.657-.459L5.482 8.062a1.745 1.745 0 0 1-.46-1.657l.548-2.19a.678.678 0 0 0-.122-.58L3.654 1.328zM1.884.511a1.745 1.745 0 0 1 2.612.163L6.29 2.98c.329.423.445.974.315 1.494l-.547 2.19a.678.678 0 0 0 .178.643l2.457 2.457a.678.678 0 0 0 .644.178l2.189-.547a1.745 1.745 0 0 1 1.494.315l2.306 1.794c.829.645.905 1.87.163 2.611l-1.034 1.034c-.74.74-1.846 1.065-2.877.702a18.634 18.634 0 0 1-7.01-4.42 18.634 18.634 0 0 1-4.42-7.009c-.362-1.03-.037-2.137.703-2.877L1.885.511z" />
+                            </svg>
+                            +91 6305863841
+                        </li>
+                        <li>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                viewBox="0 0 16 16">
+                                <path
+                                    d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4Zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1H2Zm13 2.383-4.708 2.825L15 11.105V5.383Zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741ZM1 11.105l4.708-2.897L1 5.383v5.722Z" />
+                            </svg>
+                            TravelMate@gmail.com
+                        </li>
+                        <li>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                viewBox="0 0 16 16">
+                                <path
+                                    d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z" />
+                                <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z" />
+                            </svg>
+                            Mon-Fri: 9:00 AM - 5:00 PM
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="footer-column">
+                    <h3>Newsletter</h3>
+                    <p style="margin-bottom: 15px; color: #333;">Subscribe to our newsletter for updates and special
+                        offers.</p>
+                    <form class="newsletter-form">
+                        <input type="email" placeholder="Your email address" required>
+                        <button type="submit">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                viewBox="0 0 16 16">
+                                <path
+                                    d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083l6-15Zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471-.47 1.178Z" />
+                            </svg>
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2025 Your Company Name. All Rights Reserved. | Privacy Policy | Terms of Service</p>
+            </div>
+        </div>
+    </footer>
+    <button id="scrollToTopBtn" title="Go to top">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+    <script>// Get the button
+        const scrollBtn = document.getElementById("scrollToTopBtn");
+
+        // When the user scrolls down 300px from the top of the document, show the button
+        window.onscroll = function () {
+            scrollFunction();
+        };
+
+        function scrollFunction() {
+            if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+                scrollBtn.classList.add("show");
+            } else {
+                scrollBtn.classList.remove("show");
+            }
+        }
+
+        // When the user clicks on the button, scroll to the top of the document smoothly
+        scrollBtn.addEventListener("click", function () {
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth"
+            });
+        });</script>
+
+    <div id="chat-icon" onclick="toggleChat()"
+        style="position: fixed; bottom: 100px; right: 30px; width: 60px; height: 60px; background: #24d842; border-radius: 50%; box-shadow: 0 4px 15px rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 1000; transition: transform 0.3s;">
+        <i class="fas fa-comments" style="font-size: 28px; color: white;"></i>
+    </div>
+
+    <div id="chat-box"
+        style="position: fixed; bottom: 100px; right: 30px; width: 350px; height: 450px; background: #fff; border-radius: 20px; box-shadow: 0 5px 25px rgba(0,0,0,0.2); display: none; flex-direction: column; overflow: hidden; z-index: 1000; font-family: 'Segoe UI', sans-serif;">
+
+        <div
+            style="background: #1f6f4a; padding: 15px; color: white; display: flex; align-items: center; gap: 10px;">
+            <i class="fas fa-robot"></i>
+            <span style="font-weight: bold; font-size: 16px;">TravelMate Assistant</span>
+            <span onclick="toggleChat()" style="margin-left: auto; cursor: pointer;">✖</span>
+        </div>
+
+        <div id="messages" style="flex: 1; padding: 15px; overflow-y: auto; background: #f4f4f4;">
+            <div
+                style="background: #e1e1e1; padding: 8px 12px; border-radius: 15px; max-width: 80%; margin-bottom: 10px; color: #333; font-size: 14px;">
+                Hello! Ask me about hotels, flights, or refunds.
+            </div>
+        </div>
+
+        <div style="padding: 10px; background: white; border-top: 1px solid #ddd; display: flex; gap: 5px;">
+            <input type="text" id="user-input" placeholder="Type a message..."
+                style="flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 20px; outline: none;"
+                onkeypress="if(event.key === 'Enter') sendMessage()">
+            <button onclick="sendMessage()"
+                style="background: #24d842; border: none; width: 40px; height: 40px; border-radius: 50%; color: white; cursor: pointer;">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+    <script>
+        function toggleChat() {
+            const chatBox = document.getElementById('chat-box');
+            if (chatBox.style.display === 'none' || chatBox.style.display === '') {
+                chatBox.style.display = 'flex';
+            } else {
+                chatBox.style.display = 'none';
+            }
+        }
+
+        async function sendMessage() {
+            const inputField = document.getElementById('user-input');
+            const messageBox = document.getElementById('messages');
+            const userText = inputField.value.trim();
+
+            if (userText === "") return;
+
+            // 1. Add User Message to Chat
+            const userDiv = document.createElement('div');
+            userDiv.style.cssText = "align-self: flex-end; background: #24d842; color: white; padding: 8px 12px; border-radius: 15px 15px 0 15px; max-width: 80%; margin-bottom: 10px; margin-left: auto; font-size: 14px;";
+            userDiv.textContent = userText;
+            messageBox.appendChild(userDiv);
+
+            inputField.value = ""; // Clear input
+            messageBox.scrollTop = messageBox.scrollHeight; // Scroll down
+
+            // 2. Send to Python Backend
+            try {
+                const response = await fetch('http://127.0.0.1:5001/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: userText })
+                });
+
+                const data = await response.json();
+
+                // 3. Add Bot Reply to Chat
+                const botDiv = document.createElement('div');
+                botDiv.style.cssText = "align-self: flex-start; background: #e1e1e1; color: #333; padding: 8px 12px; border-radius: 15px 15px 15px 0; max-width: 80%; margin-bottom: 10px; font-size: 14px;";
+                botDiv.textContent = data.reply;
+                messageBox.appendChild(botDiv);
+
+                messageBox.scrollTop = messageBox.scrollHeight;
+
+            } catch (error) {
+                console.error("Error:", error);
+            }
+        }
+    </script>
+</body>
+
+</html>
