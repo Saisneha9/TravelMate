@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Registration</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #ffcc00;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            width: 350px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #505250;
+        }
+        .login-link {
+            text-align: center;
+            margin-top: 15px;
+        }
+        .login-link a {
+            color: #4CAF50;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Register</h1>
+        <p>Signup now and get full access to our app.</p>
+        
+        <form id="registerForm">
+            <div class="form-group">
+                <label for="firstname">Firstname</label>
+                <input type="text" id="firstname" required>
+            </div>
+            <div class="form-group">
+                <label for="lastname">Lastname</label>
+                <input type="text" id="lastname" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" required>
+            </div>
+            <div class="form-group">
+                <label for="confirmPassword">Confirm password</label>
+                <input type="password" id="confirmPassword" required>
+            </div>
+            <button type="submit">Submit</button>
+        </form>
+        
+        <div class="login-link">
+            <p class="signin">Already have an account? <a href="loginpage.html">Signin</a></p>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  
+  const user = {
+    firstname: document.getElementById('firstname').value,
+    lastname: document.getElementById('lastname').value,
+    email: document.getElementById('email').value,
+    password: document.getElementById('password').value
+  };
+
+  // Password confirmation
+  if (user.password !== document.getElementById('confirmPassword').value) {
+    alert("Passwords don't match!");
+    return;
+  }
+
+  try {
+    const response = await fetch('/api/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(user)
+    });
+
+    const data = await response.json();
+    
+    if (data.success) {
+      window.location.href = '/originalpage.html'; // Relative path
+    } else {
+      alert(data.message || 'Registration failed');
+    }
+  } catch (err) {
+    console.error('Error:', err);
+    alert('Network error. Please try again.');
+  }
+});
+    </script>
+</body>
+</html>

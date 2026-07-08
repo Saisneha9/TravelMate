@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TravelMate - Premium Payment</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-black: #000000;
+            --bg-green-deep: #0f2f1f;
+            --green-glow: #00ff55;
+            --green-dim: #1f6f4a;
+            --text-main: #ffffff;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            /* DARK RADIAL BACKGROUND */
+            background: radial-gradient(circle at center top, var(--bg-green-deep) 0%, var(--bg-black) 90%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--text-main);
+            overflow: hidden; /* Keep floating icons inside */
+            position: relative;
+        }
+
+        /* --- BACKGROUND FLOATING ICONS (Payment Theme) --- */
+        .payment-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .float-icon {
+            position: absolute;
+            color: var(--green-glow);
+            opacity: 0.1; /* Very subtle ghost effect */
+            filter: blur(1px);
+            animation: floatAnimation 12s infinite ease-in-out alternate;
+        }
+
+        /* Specific Icon Positions */
+        .i1 { top: 15%; left: 10%; font-size: 5rem; animation-duration: 14s; } /* Shield */
+        .i2 { bottom: 20%; right: 10%; font-size: 6rem; animation-duration: 18s; filter: blur(3px); } /* Card */
+        .i3 { top: 25%; right: 20%; font-size: 4rem; animation-duration: 10s; } /* Lock */
+        .i4 { bottom: 15%; left: 15%; font-size: 3rem; animation-duration: 16s; } /* Wallet */
+        .i5 { top: 55%; left: 5%; font-size: 2.5rem; animation-duration: 20s; opacity: 0.05; } /* Check */
+        .i6 { top: 5%; right: 5%; font-size: 3rem; animation-duration: 12s; opacity: 0.05; } /* Money */
+
+        @keyframes floatAnimation {
+            0% { transform: translateY(0) rotate(0deg); }
+            100% { transform: translateY(-40px) rotate(15deg); }
+        }
+
+        /* --- NAVIGATION --- */
+        nav {
+            margin-top: 30px;
+            margin-bottom: 20px;
+            z-index: 10;
+        }
+
+        .nav-container {
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+            padding: 12px 40px;
+            border-radius: 50px;
+            border: 1px solid rgba(0, 255, 85, 0.2);
+            box-shadow: 0 0 20px rgba(0, 255, 85, 0.05);
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-container a {
+            color: #ccc;
+            text-decoration: none;
+            margin: 0 10px;
+            font-weight: 600;
+            font-size: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: 0.3s;
+        }
+
+        .nav-container a:hover, .nav-container a.active {
+            color: var(--green-glow);
+            text-shadow: 0 0 10px var(--green-glow);
+        }
+
+        /* --- PAYMENT MODAL (Glassmorphism) --- */
+        .modal {
+            z-index: 10; /* Above background */
+            width: 95%;
+            max-width: 500px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(25px); /* Higher blur to hide bg icons behind text */
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid var(--glass-border);
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
+            border-radius: 26px;
+            padding: 10px;
+            margin-bottom: 50px;
+            animation: slideUp 0.8s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        /* --- PAYMENT OPTION BUTTONS --- */
+        .payment--options {
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+            padding: 10px 0;
+        }
+
+        .payment--options button {
+            height: 55px;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--glass-border);
+            border-radius: 11px;
+            padding: 0;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .payment--options button:hover {
+            background: rgba(0, 255, 85, 0.1);
+            border-color: var(--green-glow);
+            transform: translateY(-2px);
+        }
+
+        .payment--options button i {
+            filter: drop-shadow(0 0 2px rgba(255,255,255,0.5));
+        }
+
+        /* --- SEPARATOR --- */
+        .separator {
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 10px;
+            color: var(--green-dim);
+            align-items: center;
+        }
+
+        .separator p {
+            font-weight: 600;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #aaa;
+        }
+
+        .line {
+            height: 1px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border: none;
+        }
+
+        /* --- INPUTS --- */
+        .credit-card-info--form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .input_container {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .input_label {
+            font-size: 12px;
+            color: var(--green-glow);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .input_field {
+            width: 100%;
+            height: 45px;
+            padding: 0 16px;
+            border-radius: 9px;
+            outline: none;
+            background-color: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--glass-border);
+            color: white;
+            font-size: 14px;
+            transition: 0.3s;
+        }
+
+        .input_field:focus {
+            border-color: var(--green-glow);
+            box-shadow: 0 0 10px rgba(0, 255, 85, 0.1);
+            background-color: rgba(0, 255, 85, 0.05);
+        }
+
+        .input_field::placeholder {
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        .split {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        /* --- CHECKOUT BUTTON --- */
+        .purchase--btn {
+            height: 55px;
+            margin-top: 10px;
+            background: linear-gradient(180deg, var(--green-dim) 0%, var(--bg-green-deep) 100%);
+            border: 1px solid var(--green-dim);
+            border-radius: 11px;
+            color: #ffffff;
+            font-size: 15px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .purchase--btn:hover {
+            background: var(--green-glow);
+            color: black;
+            box-shadow: 0 0 20px var(--green-glow);
+            transform: scale(1.02);
+            border-color: var(--green-glow);
+        }
+
+        /* Remove Number Arrows */
+        .input_field::-webkit-outer-spin-button,
+        .input_field::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        /* --- NOTIFICATION --- */
+        .notification {
+            position: fixed;
+            top: -100px;
+            background: rgba(0, 20, 10, 0.9);
+            border: 1px solid var(--green-glow);
+            color: var(--green-glow);
+            padding: 15px 30px;
+            border-radius: 30px;
+            transition: top 0.5s ease;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            backdrop-filter: blur(10px);
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <div class="payment-bg">
+        <i class="fas fa-shield-alt float-icon i1"></i>
+        <i class="far fa-credit-card float-icon i2"></i>
+        <i class="fas fa-lock float-icon i3"></i>
+        <i class="fas fa-wallet float-icon i4"></i>
+        <i class="fas fa-check-double float-icon i5"></i>
+        <i class="fas fa-coins float-icon i6"></i>
+    </div>
+
+    <nav>
+        <div class="nav-container">
+            <a href="originalpage.html">Home</a>
+            <a href="aboutusmain.html">About</a>
+            <a href="paymentpage.html" class="active">Premium</a>
+            <a href="contactus.html">Contact</a>
+        </div>
+    </nav>
+
+    <div class="modal">
+        <form class="form" id="paymentForm">
+            
+            <div class="payment--options">
+                <button name="paypal" type="button">
+                    <i class="fab fa-paypal" style="font-size: 24px; color: #fff;"></i>
+                </button>
+                <button name="apple-pay" type="button">
+                    <i class="fab fa-apple" style="font-size: 24px; color: #fff;"></i>
+                </button>
+                <button name="google-pay" type="button">
+                    <i class="fab fa-google-pay" style="font-size: 32px; color: #fff;"></i>
+                </button>
+            </div>
+
+            <div class="separator">
+                <hr class="line">
+                <p>Secure Credit Card</p>
+                <hr class="line">
+            </div>
+
+            <div class="credit-card-info--form">
+                <div class="input_container">
+                    <label class="input_label">Card Holder Name</label>
+                    <input class="input_field" type="text" placeholder="JOHN DOE" required>
+                </div>
+                <div class="input_container">
+                    <label class="input_label">Card Number</label>
+                    <input class="input_field" type="number" placeholder="0000 0000 0000 0000" required>
+                </div>
+                <div class="input_container">
+                    <div class="split">
+                        <div class="input_container">
+                            <label class="input_label">Expiry</label>
+                            <input class="input_field" type="text" placeholder="MM/YY" required>
+                        </div>
+                        <div class="input_container">
+                            <label class="input_label">CVV</label>
+                            <input class="input_field" type="number" placeholder="123" required>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="purchase--btn" type="submit">Complete Checkout <i class="fas fa-lock" style="margin-left:8px;"></i></button>
+        </form>
+    </div>
+
+    <div class="notification" id="notification">
+        <i class="fas fa-check-circle"></i> Payment Successful!
+    </div>
+
+    <script>
+        document.getElementById('paymentForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const btn = document.querySelector('.purchase--btn');
+            const originalText = btn.innerHTML;
+            const notif = document.getElementById('notification');
+
+            // Loading Animation
+            btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Verifying...';
+            btn.style.opacity = '0.7';
+
+            setTimeout(() => {
+                btn.innerHTML = '<i class="fas fa-check"></i> Paid';
+                btn.style.opacity = '1';
+                btn.style.background = '#00ff55';
+                btn.style.color = 'black';
+                
+                // Show Notification
+                notif.style.top = '30px';
+                
+                setTimeout(() => {
+                    notif.style.top = '-100px';
+                }, 3000);
+            }, 2000);
+        });
+    </script>
+
+</body>
+</html>

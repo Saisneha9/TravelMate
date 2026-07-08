@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rajasthan Travel Guide: Best Places, Seasons & Itineraries</title>
+  <style>
+    :root {
+      --primary-color: #a83232;
+      --secondary-color: #fcb045;
+      --accent-color: #e6b376;
+      --text-color: #333;
+      --light-bg: #f9f4e8;
+      --card-bg: #fff;
+      --header-font: 'Georgia', serif;
+      --body-font: 'Segoe UI', sans-serif;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: var(--body-font);
+      background-color: var(--light-bg);
+      color: var(--text-color);
+      line-height: 1.6;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+    
+    header {
+      background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+      color: white;
+      padding: 30px 0;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    header::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url('https://upload.wikimedia.org/wikipedia/commons/9/9e/Amber_Fort.jpg');
+      background-size: cover;
+      background-position: center;
+      opacity: 0.2;
+      z-index: 0;
+    }
+    
+    .header-content {
+      position: relative;
+      z-index: 1;
+    }
+    
+    h1 {
+      font-family: var(--header-font);
+      font-size: 3rem;
+      margin-bottom: 15px;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    }
+    
+    h2 {
+      font-family: var(--header-font);
+      font-size: 2.2rem;
+      color: var(--primary-color);
+      margin: 50px 0 25px;
+      text-align: center;
+      position: relative;
+    }
+    
+    h2::after {
+      content: "";
+      display: block;
+      width: 100px;
+      height: 3px;
+      background: var(--secondary-color);
+      margin: 15px auto;
+    }
+    
+    h3 {
+      font-family: var(--header-font);
+      font-size: 1.5rem;
+      color: var(--primary-color);
+      margin: 15px 0;
+    }
+    
+    .intro {
+      background-color: white;
+      padding: 40px;
+      margin: 30px 0;
+      border-radius: 8px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .intro p {
+      font-size: 1.1rem;
+      max-width: 800px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    
+    .season-guide {
+      background-color: var(--card-bg);
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      margin-bottom: 30px;
+    }
+    
+    .season-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-top: 25px;
+    }
+    
+    .season-card {
+      background: linear-gradient(to bottom right, #fff, #f5f5f5);
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    
+    .season-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+    }
+    
+    .season-card h4 {
+      background-color: var(--primary-color);
+      color: white;
+      padding: 12px;
+      text-align: center;
+      font-size: 1.2rem;
+    }
+    
+    .season-card div {
+      padding: 15px;
+    }
+    
+    .places-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 30px;
+      margin-top: 30px;
+    }
+    
+    .place-card {
+      background-color: var(--card-bg);
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    
+    .place-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+    }
+    
+    .place-image {
+      height: 250px;
+      overflow: hidden;
+    }
+    
+    .place-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s;
+    }
+    
+    .place-card:hover .place-image img {
+      transform: scale(1.05);
+    }
+    
+    .place-details {
+      padding: 20px;
+    }
+    
+    .place-name {
+      font-size: 1.5rem;
+      color: var(--primary-color);
+      margin-bottom: 10px;
+    }
+    
+    .place-info {
+      margin: 15px 0;
+    }
+    
+    .place-info p {
+      margin: 8px 0;
+    }
+    
+    .place-info strong {
+      color: var(--primary-color);
+      display: inline-block;
+      width: 120px;
+    }
+    
+    .itinerary-section {
+      background-color: var(--card-bg);
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      margin: 30px 0;
+    }
+    
+    .itinerary-tabs {
+      display: flex;
+      border-bottom: 2px solid var(--accent-color);
+      margin-bottom: 20px;
+    }
+    
+    .tab {
+      padding: 10px 20px;
+      background-color: #eee;
+      border: none;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: bold;
+      transition: background-color 0.3s;
+    }
+    
+    .tab:hover {
+      background-color: #ddd;
+    }
+    
+    .tab.active {
+      background-color: var(--accent-color);
+      color: white;
+    }
+    
+    .itinerary-content {
+      display: none;
+      animation: fadeIn 0.5s;
+    }
+    
+    .itinerary-content.active {
+      display: block;
+    }
+    
+    .day-card {
+      background-color: #f9f9f9;
+      border-left: 4px solid var(--primary-color);
+      padding: 15px;
+      margin-bottom: 15px;
+      border-radius: 0 8px 8px 0;
+    }
+    
+    .day-card h4 {
+      color: var(--primary-color);
+      margin-bottom: 8px;
+    }
+    
+    .travel-tips {
+      background-color: var(--card-bg);
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      margin-bottom: 40px;
+    }
+    
+    .tips-list {
+      list-style-type: none;
+      padding: 0;
+    }
+    
+    .tips-list li {
+      padding: 12px 0;
+      border-bottom: 1px dashed #ccc;
+      position: relative;
+      padding-left: 30px;
+    }
+    
+    .tips-list li:last-child {
+      border-bottom: none;
+    }
+    
+    .tips-list li::before {
+      content: "✓";
+      color: var(--primary-color);
+      font-weight: bold;
+      position: absolute;
+      left: 0;
+    }
+    
+    footer {
+      background-color: var(--primary-color);
+      color: white;
+      text-align: center;
+      padding: 20px 0;
+      margin-top: 50px;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 2.5rem;
+      }
+      
+      h2 {
+        font-size: 1.8rem;
+      }
+      
+      .places-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .season-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .book-btn {
+  display: block;
+  margin: 30px auto 10px;
+  padding: 14px 28px;
+  background: #ff6f00;
+  color: white;
+  border: none;
+  border-radius: 30px;
+  font-size: 17px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.book-btn:hover {
+  background: #ff8c1a;
+  transform: scale(1.05);
+}
+
+/* ================= DARK THEME OVERRIDE ================= */
+
+body {
+  background: linear-gradient(to bottom, #071f18, #0b2e24);
+  color: #cfeee4;
+}
+
+/* REMOVE ALL WHITE BACKGROUNDS */
+header,
+.intro,
+.season-guide,
+.itinerary-section,
+.travel-tips,
+.place-card,
+.season-card,
+.day-card {
+  background: linear-gradient(145deg, #0b2e24, #114235) !important;
+  color: #d9f4eb;
+}
+
+/* ================= HERO IMAGE ================= */
+
+header {
+  position: relative;
+  background: url("rajasthani.jpeg") center/cover no-repeat !important;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+ background-size: contain !important;
+  background-repeat: no-repeat;
+  background-position: center;
+  height: auto;
+  min-height: 80vh;
+}
+
+
+/* REMOVE HEADER TEXT VISIBILITY */
+.header-content {
+  display: none;
+}
+
+/* DARK OVERLAY */
+header::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  z-index: 1;
+}
+
+/* BOTTOM FADE */
+header::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 45%;
+  background: linear-gradient(
+    to bottom,
+    rgba(0,0,0,0),
+    #071f18
+  );
+  z-index: 2;
+}
+
+/* ================= CARDS & TEXT ================= */
+
+h1, h2, h3, h4 {
+  color: #a8e6cf !important;
+}
+
+.place-card:hover,
+.season-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 25px 40px rgba(0,0,0,0.6);
+}
+
+.place-details p,
+.day-card p,
+.tips-list li {
+  color: #d9f4eb;
+}
+
+/* BUTTON FIX */
+.book-btn {
+  background: #ff8c1a;
+  color: #051510;
+}
+
+.book-btn:hover {
+  background: #ffa94d;
+}
+
+/* FOOTER */
+footer {
+  background: #051510;
+  color: #9bdcc7;
+}
+
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-content">
+      <h1>Rajasthan Travel Guide</h1>
+      <p>Discover the royal heritage, vibrant culture, and majestic forts of the Land of Kings</p>
+    </div>
+  </header>
+
+  <div class="container">
+    <section class="intro">
+      <p>Rajasthan, known as the "Land of Kings," is India's largest state and a treasure trove of royal heritage, vibrant culture, and stunning landscapes. From magnificent forts and palaces to colorful festivals and bustling markets, Rajasthan offers a unique blend of history, tradition, and natural beauty that captivates travelers from around the world.</p>
+    </section>
+
+    <section class="season-guide">
+      <h2>Best Time to Visit Rajasthan</h2>
+      <div class="season-grid">
+        <div class="season-card">
+          <h4>Winter (October to March)</h4>
+          <div>
+            <p><strong>Best Season:</strong> Perfect weather with sunny days and cool nights.</p>
+            <p><strong>Temperature:</strong> 10°C to 25°C</p>
+            <p><strong>Ideal for:</strong> Sightseeing, desert safaris, cultural festivals</p>
+            <p><strong>Events:</strong> Pushkar Camel Fair (November), Desert Festival (February)</p>
+          </div>
+        </div>
+        
+        <div class="season-card">
+          <h4>Summer (April to June)</h4>
+          <div>
+            <p><strong>Challenging:</strong> Extremely hot and dry weather.</p>
+            <p><strong>Temperature:</strong> 25°C to 45°C</p>
+            <p><strong>Ideal for:</strong> Budget travelers, hill stations like Mount Abu</p>
+            <p><strong>Events:</strong> Gangaur Festival (March-April), Summer Festival in Mount Abu (May)</p>
+          </div>
+        </div>
+        
+        <div class="season-card">
+          <h4>Monsoon (July to September)</h4>
+          <div>
+            <p><strong>Moderate:</strong> Pleasant with occasional rainfall.</p>
+            <p><strong>Temperature:</strong> 20°C to 35°C</p>
+            <p><strong>Ideal for:</strong> Photography, lush landscapes, fewer tourists</p>
+            <p><strong>Events:</strong> Teej Festival (August), Kajli Teej (August)</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <h2>Top Places to Visit in Rajasthan</h2>
+    <div class="places-grid" id="placesGrid">
+      <!-- Places will be loaded by JavaScript -->
+    </div>
+
+    <section class="itinerary-section">
+      <h2>Recommended Itineraries</h2>
+      <div class="itinerary-tabs">
+        <button class="tab active" onclick="showItinerary('short')">3-5 Days</button>
+        <button class="tab" onclick="showItinerary('medium')">7-10 Days</button>
+        <button class="tab" onclick="showItinerary('long')">14+ Days</button>
+      </div>
+      
+      <div id="short" class="itinerary-content active">
+        <h3>Quick Rajasthan Tour (3-5 Days)</h3>
+        <p>Perfect for short breaks or first-time visitors wanting to experience the highlights.</p>
+        
+        <div class="day-card">
+          <h4>Day 1-2: Jaipur</h4>
+          <p>Start your journey in the Pink City. Visit Amber Fort, City Palace, Hawa Mahal, and Jantar Mantar. Explore local markets for handicrafts and textiles.</p>
+        </div>
+        
+        <div class="day-card">
+          <h4>Day 3: Pushkar</h4>
+          <p>Visit the sacred Pushkar Lake and Brahma Temple. Explore the colorful markets and enjoy the laid-back atmosphere of this holy town.</p>
+        </div>
+        
+        <div class="day-card">
+          <h4>Day 4-5: Udaipur</h4>
+          <p>Experience the romantic City of Lakes. Visit City Palace, Lake Pichola, Jagdish Temple, and enjoy a sunset boat ride.</p>
+        </div>
+        <button class="book-btn"
+onclick="bookStateTrip(
+  'Rajasthan',
+  '3–5 Days',
+  ['Jaipur','Pushkar','Udaipur']
+)">
+📦 Book 3–5 Day Rajasthan Trip
+</button>
+
+
+      </div>
+      
+      <div id="medium" class="itinerary-content">
+        <h3>Classic Rajasthan Tour (7-10 Days)</h3>
+        <p>A comprehensive tour covering the major attractions and cities.</p>
+        
+        <div class="day-card">
+          <h4>Day 1-2: Jaipur</h4>
+          <p>Explore the Pink City's magnificent forts, palaces, and vibrant markets.</p>
+        </div>
+        
+        <div class="day-card">
+          <h4>Day 3-4: Jodhpur</h4>
+          <p>Visit the Blue City, including Mehrangarh Fort, Jaswant Thada, and Umaid Bhawan Palace.</p>
+        </div>
+        
+        <div class="day-card">
+          <h4>Day 5: Jaisalmer</h4>
+          <p>Explore the Golden City's fort, havelis, and enjoy a desert safari with overnight camping.</p>
+        </div>
+        
+        <div class="day-card">
+          <h4>Day 6-7: Udaipur</h4>
+          <p>Experience the City of Lakes with its romantic setting and majestic palaces.</p>
+        </div>
+        
+        <div class="day-card">
+          <h4>Day 8: Pushkar</h4>
+          <p>Visit the holy town with its sacred lake and Brahma Temple.</p>
+
+        </div>
+        
+        <div class="day-card">
+          <h4>Day 9-10: Ranthambore</h4>
+          <p>Go on a wildlife safari to spot tigers and other wildlife in their natural habitat.</p>
+        </div>
+                 <button class="book-btn"
+onclick="bookStateTrip(
+  'Rajasthan',
+  '7–10 Days',
+  ['Jaipur','Jodhpur','Jaisalmer','Udaipur','Pushkar','Ranthambore']
+)">
+📦 Book 7–10 Day Rajasthan Trip
+</button>
+
+      </div>
+      
+      <div id="long" class="itinerary-content">
+        <h3>Complete Rajasthan Exploration (14+ Days)</h3>
+        <p>An in-depth journey to experience the full diversity of Rajasthan.</p>
+        
+        <div class="day-card">
+          <h4>Day 1-3: Jaipur</h4>
+          <p>Thoroughly explore the Pink City and take day trips to nearby attractions like Abhaneri Stepwell and Chand Baori.</p>
+        </div>
+        
+        <div class="day-card">
+          <h4>Day 4-5: Ranthambore</h4>
+          <p>Enjoy multiple safari sessions to maximize chances of spotting tigers and other wildlife.</p>
+        </div>
+        
+        <div class="day-card">
+          <h4>Day 6-7: Bundi & Chittorgarh</h4>
+          <p>Explore the less-visited but fascinating towns known for stepwells, forts, and palaces.</p>
+        </div>
+        
+        <div class="day-card">
+          <h4>Day 8-9: Udaipur</h4>
+          <p>Relax in the romantic city and take day trips to nearby temples and palaces.</p>
+        </div>
+        
+        <div class="day-card">
+          <h4>Day 10-11: Jodhpur</h4>
+          <p>Explore the Blue City and surrounding Bishnoi villages to experience rural Rajasthan.</p>
+        </div>
+        
+        <div class="day-card">
+          <h4>Day 12-13: Jaisalmer</h4>
+          <p>Discover the Golden City and spend a night in the Thar Desert under starlit skies.</p>
+        </div>
+        
+        <div class="day-card">
+          <h4>Day 14-15: Bikaner & Shekhawati</h4>
+          <p>Visit Junagarh Fort in Bikaner and explore the painted havelis of Shekhawati region.</p>
+        </div>
+        
+        <div class="day-card">
+          <h4>Day 16: Pushkar</h4>
+          <p>End your journey in the holy town of Pushkar with its spiritual atmosphere.</p>
+        </div>
+       <button class="book-btn"
+onclick="bookStateTrip(
+  'Rajasthan',
+  '14+ Days',
+  ['Jaipur','Ranthambore','Bundi','Chittorgarh','Udaipur','Jodhpur','Jaisalmer','Bikaner','Shekhawati','Pushkar','Mount Abu']
+)">
+📦 Book 14+ Day Rajasthan Trip
+</button>
+
+
+      </div>
+      
+      
+    </section>
+
+    <section class="travel-tips">
+      <h2>Essential Travel Tips for Rajasthan</h2>
+      <ul class="tips-list">
+        <li><strong>Dress appropriately:</strong> Modest clothing is recommended, especially when visiting religious sites. Light cotton clothes in summer and warm layers in winter.</li>
+        <li><strong>Stay hydrated:</strong> Rajasthan's dry climate requires constant hydration. Always carry a water bottle.</li>
+        <li><strong>Bargaining is expected:</strong> When shopping in local markets, friendly bargaining is part of the culture.</li>
+        <li><strong>Respect local customs:</strong> Ask permission before photographing locals, especially women.</li>
+        <li><strong>Transportation:</strong> Hire a private driver for comfortable travel between cities, or use trains for longer distances.</li>
+        <li><strong>Food precautions:</strong> Stick to cooked food and bottled water to avoid stomach issues.</li>
+        <li><strong>Language:</strong> Hindi and Rajasthani are widely spoken, but English is understood in tourist areas.</li>
+        <li><strong>Book in advance:</strong> During peak season (October-March), book accommodations and transportation well in advance.</li>
+      </ul>
+    </section>
+  </div>
+
+  <footer>
+    <p>© 2025 Rajasthan Travel Guide | Explore the Land of Kings</p>
+  </footer>
+
+  <script>
+    // Place data with details
+    const places = [
+      {
+        name: "Jaipur (Pink City)",
+        image: "jaipur.jpg",
+        description: "The capital city known for its distinctive pink-hued buildings, magnificent palaces, and rich cultural heritage.",
+        bestTime: "October to March",
+        idealDuration: "2-3 days",
+        mustVisit: "Amber Fort, Hawa Mahal, City Palace, Jantar Mantar, Albert Hall Museum",
+        specialEvents: "Jaipur Literature Festival (January), Elephant Festival (March)"
+      },
+      {
+        name: "Udaipur (City of Lakes)",
+        image: "https://upload.wikimedia.org/wikipedia/commons/7/7e/City_of_Lakes_-_Udaipur.jpg",
+        description: "A romantic city with beautiful lakes, marble palaces, and lush gardens set against the backdrop of the Aravalli Hills.",
+        bestTime: "September to March",
+        idealDuration: "2-3 days",
+        mustVisit: "City Palace, Lake Pichola, Jag Mandir, Jagdish Temple, Saheliyon ki Bari",
+        specialEvents: "Mewar Festival (March-April), Shilpgram Crafts Fair (December)"
+      },
+      {
+        name: "Jodhpur (Blue City)",
+        image: "https://upload.wikimedia.org/wikipedia/commons/0/03/Jodhpur_blue_city.jpg",
+        description: "Known for its blue-painted houses and dominated by the impressive Mehrangarh Fort overlooking the city.",
+        bestTime: "October to March",
+        idealDuration: "1-2 days",
+        mustVisit: "Mehrangarh Fort, Umaid Bhawan Palace, Jaswant Thada, Clock Tower Market",
+        specialEvents: "Marwar Festival (October), Rajasthan International Folk Festival (October)"
+      },
+      {
+        name: "Jaisalmer (Golden City)",
+        image: "https://upload.wikimedia.org/wikipedia/commons/a/a8/Jaisalmer-Fort-Palace.jpg",
+        description: "A desert city with golden sandstone architecture, including a living fort and beautiful havelis.",
+        bestTime: "October to March",
+        idealDuration: "2-3 days",
+        mustVisit: "Jaisalmer Fort, Patwon ki Haveli, Desert Safari, Gadisar Lake",
+        specialEvents: "Desert Festival (February), Ramdevra Fair (August-September)"
+      },
+      {
+        name: "Pushkar",
+        image: "https://upload.wikimedia.org/wikipedia/commons/c/cd/Pushkar_Lake_and_Ghats.jpg",
+        description: "A sacred town built around a holy lake with numerous temples and a laid-back atmosphere.",
+        bestTime: "October to March (November for Camel Fair)",
+        idealDuration: "1-2 days",
+        mustVisit: "Pushkar Lake, Brahma Temple, Pushkar Bazaar, Sunset Point",
+        specialEvents: "Pushkar Camel Fair (November)"
+      },
+      {
+        name: "Ranthambore",
+        image: "https://upload.wikimedia.org/wikipedia/commons/d/d7/Tiger_Ranthambhore.jpg",
+        description: "Home to one of India's most famous national parks, known for its tiger population and ancient ruins.",
+        bestTime: "October to June (Closed during monsoon)",
+        idealDuration: "2 days",
+        mustVisit: "Ranthambore National Park, Ranthambore Fort, Trinetra Ganesh Temple",
+        specialEvents: "Wildlife photography tours (October-April)"
+      },
+      {
+        name: "Bikaner",
+        image: "https://upload.wikimedia.org/wikipedia/commons/2/2d/Junagarh_Fort-Bikaner.jpg",
+        description: "Known for its magnificent forts, palaces, and famous camel breeding farm.",
+        bestTime: "October to March",
+        idealDuration: "1-2 days",
+        mustVisit: "Junagarh Fort, Karni Mata Temple (Rat Temple), Camel Breeding Farm",
+        specialEvents: "Camel Festival (January)"
+      },
+      {
+        name: "Mount Abu",
+        image: "https://upload.wikimedia.org/wikipedia/commons/6/6b/Nakki_Lake%2C_Mount_Abu%2C_Rajasthan.jpg",
+        description: "Rajasthan's only hill station, offering cool relief from the desert heat and beautiful Dilwara Temples.",
+        bestTime: "Year-round (especially April to June for escape from heat)",
+        idealDuration: "2 days",
+        mustVisit: "Dilwara Jain Temples, Nakki Lake, Sunset Point, Guru Shikhar",
+        specialEvents: "Summer Festival (May), Winter Festival (December)"
+      }
+    ];
+
+    // Function to display places
+    function displayPlaces() {
+      const grid = document.getElementById('placesGrid');
+      
+      places.forEach(place => {
+        const placeCard = document.createElement('div');
+        placeCard.className = 'place-card';
+        
+        placeCard.innerHTML = `
+          <div class="place-image">
+            <img src="${place.image}" alt="${place.name}">
+          </div>
+          <div class="place-details">
+            <h3 class="place-name">${place.name}</h3>
+            <p>${place.description}</p>
+            <div class="place-info">
+              <p><strong>Best Time:</strong> ${place.bestTime}</p>
+              <p><strong>Duration:</strong> ${place.idealDuration}</p>
+              <p><strong>Must Visit:</strong> ${place.mustVisit}</p>
+              <p><strong>Events:</strong> ${place.specialEvents}</p>
+            </div>
+          </div>
+        `;
+        
+        grid.appendChild(placeCard);
+      });
+    }
+
+    // Function to switch between itineraries
+    function showItinerary(id) {
+      // Hide all itinerary contents
+      const contents = document.getElementsByClassName('itinerary-content');
+      for (let i = 0; i < contents.length; i++) {
+        contents[i].classList.remove('active');
+      }
+      
+      // Deactivate all tabs
+      const tabs = document.getElementsByClassName('tab');
+      for (let i = 0; i < tabs.length; i++) {
+        tabs[i].classList.remove('active');
+      }
+      
+      // Show selected itinerary and activate its tab
+      document.getElementById(id).classList.add('active');
+      // Find the clicked tab and activate it
+      const clickedTab = document.querySelector(`.tab[onclick="showItinerary('${id}')"]`);
+      if (clickedTab) {
+        clickedTab.classList.add('active');
+      }
+    }
+
+    // Initialize page
+    window.onload = function() {
+      displayPlaces();
+    };
+  </script>
+<script>
+function bookStateTrip(state, duration, places) {
+  const data = {
+    state: state,
+    duration: duration,
+    places: places
+  };
+
+  localStorage.setItem("selectedStatePackage", JSON.stringify(data));
+  window.open("statebooking.html", "_blank");
+}
+</script>
+
+
+
+</body>
+</html>

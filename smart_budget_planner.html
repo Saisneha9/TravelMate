@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TravelMate - Budget Planner</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+/* --- THEME VARIABLES --- */
+:root {
+    --bg-black: #000000;
+    --bg-green-deep: #0f2f1f;
+    --green-glow: #00ff55;
+    --green-dim: #1f6f4a;
+    --text-main: #ffffff;
+    --glass-bg: rgba(255, 255, 255, 0.05);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --card-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    min-height: 100vh;
+    /* Dark Radial Background */
+    background: radial-gradient(circle at center top, var(--bg-green-deep) 0%, var(--bg-black) 90%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: var(--text-main);
+    overflow-x: hidden;
+    position: relative;
+}
+
+/* --- FLOATING BACKGROUND ICONS --- */
+.bg-icons {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.float-icon {
+    position: absolute;
+    color: var(--green-glow);
+    opacity: 0.05;
+    filter: blur(2px);
+    animation: floatAnimation 20s infinite ease-in-out alternate;
+}
+
+.i1 { top: 10%; left: 5%; font-size: 6rem; }
+.i2 { bottom: 20%; right: 10%; font-size: 8rem; animation-duration: 25s; }
+.i3 { top: 40%; right: 5%; font-size: 4rem; animation-duration: 15s; }
+.i4 { bottom: 10%; left: 15%; font-size: 5rem; animation-duration: 18s; }
+
+@keyframes floatAnimation {
+    0% { transform: translateY(0) rotate(0deg); }
+    100% { transform: translateY(-50px) rotate(20deg); }
+}
+
+/* --- NAVIGATION --- */
+nav {
+    margin-top: 30px;
+    z-index: 100;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.nav-container {
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(10px);
+    padding: 12px 40px;
+    border-radius: 50px;
+    border: 1px solid rgba(0, 255, 85, 0.2);
+    box-shadow: 0 0 20px rgba(0, 255, 85, 0.05);
+    display: flex;
+    gap: 20px;
+}
+
+.nav-container a {
+    color: #ccc;
+    text-decoration: none;
+    margin: 0 10px;
+    font-weight: 600;
+    font-size: 15px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: 0.3s;
+}
+
+.nav-container a:hover {
+    color: var(--green-glow);
+    text-shadow: 0 0 10px var(--green-glow);
+}
+
+/* --- MAIN LAYOUT --- */
+.container {
+    width: 95%;
+    max-width: 1200px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    z-index: 10;
+    margin-top: 30px;
+    margin-bottom: 50px;
+}
+
+/* HEADER */
+.header {
+    text-align: center;
+    padding: 20px;
+}
+
+.header h1 {
+    font-size: 2.5rem;
+    font-weight: 300;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.header h1 span {
+    color: var(--green-glow);
+    font-weight: 800;
+    text-shadow: 0 0 20px rgba(0, 255, 85, 0.4);
+}
+
+.header p {
+    font-size: 1rem;
+    color: #aaa;
+    margin-top: 5px;
+}
+
+/* CONTENT GRID */
+.content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+}
+
+@media (max-width: 900px) {
+    .content { grid-template-columns: 1fr; }
+}
+
+/* GLASS CARDS */
+.card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: var(--card-shadow);
+    transition: 0.3s;
+}
+
+.card:hover {
+    border-color: var(--green-dim);
+}
+
+.card-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--green-glow);
+    margin-bottom: 25px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* INPUT GROUPS */
+.input-group {
+    margin-bottom: 20px;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: 600;
+    color: var(--text-main);
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
+}
+
+.input-with-icon {
+    position: relative;
+}
+
+.input-with-icon i {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--green-glow);
+}
+
+.input-with-icon input, 
+.input-with-icon select {
+    width: 100%;
+    padding: 15px 15px 15px 45px;
+    border-radius: 12px;
+    border: 1px solid var(--glass-border);
+    background: rgba(0, 0, 0, 0.4);
+    color: white;
+    font-size: 1rem;
+    outline: none;
+    transition: 0.3s;
+}
+
+.input-with-icon input:focus, 
+.input-with-icon select:focus {
+    border-color: var(--green-glow);
+    background: rgba(0, 255, 85, 0.05);
+    box-shadow: 0 0 15px rgba(0, 255, 85, 0.1);
+}
+
+/* TRAVELER SELECTOR */
+.traveler-type-selector {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.traveler-btn {
+    flex: 1;
+    padding: 15px;
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    cursor: pointer;
+    text-align: center;
+    color: #aaa;
+    transition: 0.3s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+}
+
+.traveler-btn:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: white;
+}
+
+.traveler-btn.active {
+    background: linear-gradient(135deg, var(--green-dim), var(--green-glow));
+    color: black;
+    font-weight: bold;
+    border-color: var(--green-glow);
+    box-shadow: 0 0 15px rgba(0, 255, 85, 0.3);
+}
+
+/* TRAVELER COUNT INPUTS */
+.traveler-count {
+    display: none;
+    margin-top: 15px;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 15px;
+    border-radius: 10px;
+}
+
+.traveler-count.active {
+    display: block;
+    animation: fadeIn 0.5s ease;
+}
+
+.count-input {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.count-input input {
+    width: 70px;
+    background: black;
+    border: 1px solid var(--green-dim);
+    color: var(--green-glow);
+    text-align: center;
+    padding: 8px;
+    border-radius: 8px;
+}
+
+/* BUTTONS */
+.btn-group {
+    display: flex;
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.btn {
+    flex: 1;
+    padding: 16px;
+    border: none;
+    border-radius: 50px;
+    font-size: 1rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--green-dim), var(--green-glow));
+    color: black;
+}
+
+.btn-primary:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 25px var(--green-glow);
+}
+
+.btn-secondary {
+    background: transparent;
+    border: 2px solid var(--green-dim);
+    color: var(--green-glow);
+}
+
+.btn-secondary:hover {
+    background: rgba(31, 111, 74, 0.2);
+    border-color: var(--green-glow);
+}
+
+/* ESTIMATE BOX */
+.estimate-box {
+    background: rgba(0, 0, 0, 0.6);
+    border: 1px solid var(--green-dim);
+    padding: 20px;
+    border-radius: 15px;
+    margin-bottom: 25px;
+    text-align: center;
+}
+
+.estimate-box h3 {
+    font-size: 0.9rem;
+    color: #aaa;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+}
+
+.estimate-amount {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--green-glow);
+    text-shadow: 0 0 10px rgba(0, 255, 85, 0.3);
+}
+
+/* OUTPUT AREA */
+#output {
+    min-height: 200px;
+}
+
+.budget-details {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin: 20px 0;
+}
+
+.budget-item {
+    background: rgba(255, 255, 255, 0.03);
+    padding: 15px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.budget-item .category {
+    color: #ccc;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.budget-item .amount {
+    font-weight: 700;
+    color: var(--green-glow);
+}
+
+/* DESTINATION SUGGESTIONS */
+.destination-suggestions {
+    margin-top: 25px;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 15px;
+    border: 1px solid var(--glass-border);
+}
+
+.destinations-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.destination-card {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    padding: 12px;
+    text-align: center;
+    cursor: pointer;
+    transition: 0.3s;
+    border: 1px solid transparent;
+}
+
+.destination-card:hover, .destination-card.selected {
+    background: rgba(31, 111, 74, 0.3);
+    border-color: var(--green-glow);
+}
+
+.destination-icon {
+    font-size: 1.5rem;
+    color: var(--green-glow);
+    margin-bottom: 5px;
+}
+
+.destination-card h5 { color: white; margin-bottom: 5px; }
+.destination-card p { font-size: 11px; color: #aaa; }
+.destination-price { color: var(--green-glow); font-weight: bold; margin-top: 5px; font-size: 0.9rem; }
+
+/* CHART */
+.chart-container {
+    height: 250px;
+    margin-top: 20px;
+    position: relative;
+}
+
+/* TIP BOX */
+.tip-box {
+    background: rgba(255, 255, 0, 0.1);
+    border-left: 4px solid #ffd700;
+    padding: 15px;
+    border-radius: 10px;
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    color: #ffecb3;
+}
+
+.trip-type {
+    display: inline-block;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+}
+.trip-type.economy { background: rgba(0, 255, 255, 0.2); color: cyan; }
+.trip-type.standard { background: rgba(0, 255, 85, 0.2); color: #00ff55; }
+.trip-type.premium { background: rgba(255, 0, 255, 0.2); color: magenta; }
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.fade-in { animation: fadeIn 0.5s ease forwards; }
+
+</style>
+</head>
+
+<body>
+
+<div class="bg-icons">
+    <i class="fas fa-coins float-icon i1"></i>
+    <i class="fas fa-plane-departure float-icon i2"></i>
+    <i class="fas fa-wallet float-icon i3"></i>
+    <i class="fas fa-map-marked-alt float-icon i4"></i>
+</div>
+
+<nav>
+    <div class="nav-container">
+        <a href="originalpage2.html">Home</a>
+        <a href="aboutusmain.html">About</a>
+        <a href="paymentpage.html">Payment</a>
+        <a href="contactus.html">Contact</a>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="header">
+        <h1>Smart Trip <span>Budget Planner</span></h1>
+        <p>Calculate, Plan, and Visualize your travel expenses instantly</p>
+    </div>
+
+    <div class="content">
+        <div class="card">
+            <div class="card-title">
+                <i class="fas fa-sliders-h"></i> Trip Details
+            </div>
+
+            <div class="input-group">
+                <label>WHO IS TRAVELING?</label>
+                <div class="traveler-type-selector">
+                    <div class="traveler-btn active" data-type="solo">
+                        <i class="fas fa-user"></i> <span>Solo</span>
+                    </div>
+                    <div class="traveler-btn" data-type="family">
+                        <i class="fas fa-home"></i> <span>Family</span>
+                    </div>
+                    <div class="traveler-btn" data-type="friends">
+                        <i class="fas fa-user-friends"></i> <span>Friends</span>
+                    </div>
+                </div>
+
+                <div class="traveler-count active" id="solo-count">
+                    <span style="color:#aaa; font-size:0.9rem;">Just you - enjoying the freedom!</span>
+                </div>
+                <div class="traveler-count" id="family-count">
+                    <div class="count-input">
+                        <label>Total Members:</label>
+                        <input type="number" id="familyMembers" value="4" min="2" max="10">
+                    </div>
+                </div>
+                <div class="traveler-count" id="friends-count">
+                    <div class="count-input">
+                        <label>Total Friends:</label>
+                        <input type="number" id="friendsCount" value="3" min="2" max="10">
+                    </div>
+                </div>
+            </div>
+
+            <div class="estimate-box">
+                <h3>Estimated Average Cost</h3>
+                <div class="estimate-amount" id="estimateAmount">₹ 28,000</div>
+                <p id="estimateDetails" style="font-size: 0.8rem; color: #888;">Based on solo travel for 5 days</p>
+            </div>
+
+            <div class="input-group">
+                <label>TOTAL BUDGET (₹)</label>
+                <div class="input-with-icon">
+                    <i class="fas fa-rupee-sign"></i>
+                    <input type="number" id="budget" placeholder="e.g. 50000">
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>TOP PRIORITY</label>
+                <div class="input-with-icon">
+                    <i class="fas fa-heart"></i>
+                    <select id="priority">
+                        <option value="">Select Priority...</option>
+                        <option value="food">🍽 Food & Dining</option>
+                        <option value="shopping">🛍 Shopping</option>
+                        <option value="stay">🏨 Luxury Stay</option>
+                        <option value="travel">🚕 Comfortable Travel</option>
+                        <option value="activities">🎡 Adventure & Tours</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>DURATION (DAYS)</label>
+                <div class="input-with-icon">
+                    <i class="fas fa-clock"></i>
+                    <input type="number" id="duration" value="5" min="1" max="30">
+                </div>
+            </div>
+
+            <div class="btn-group">
+                <button class="btn btn-primary" onclick="generatePlan()">
+                    <i class="fas fa-magic"></i> Plan My Trip
+                </button>
+                <button class="btn btn-secondary" onclick="downloadPDF()">
+                    <i class="fas fa-download"></i> PDF
+                </button>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">
+                <i class="fas fa-chart-pie"></i> Your Breakdown
+            </div>
+
+            <div id="output">
+                <div style="text-align: center; padding: 60px 20px; color: #555;">
+                    <i class="fas fa-chart-bar" style="font-size: 4rem; margin-bottom: 20px; opacity: 0.3;"></i>
+                    <p>Enter your details and click "Plan My Trip" to see the magic.</p>
+                </div>
+            </div>
+
+            <div class="destination-suggestions" id="destinationSuggestions" style="display: none;">
+                <h4 style="color:var(--green-glow); margin-bottom:10px; font-size:0.9rem;">
+                    <i class="fas fa-map-pin"></i> SUGGESTED FOR YOU
+                </h4>
+                <div class="destinations-grid" id="destinationsGrid"></div>
+            </div>
+
+            <div class="chart-container">
+                <canvas id="budgetChart"></canvas>
+            </div>
+
+            <div class="tip-box" id="tipBox" style="display: none;">
+                <i class="fas fa-lightbulb"></i>
+                <span id="tipText">Loading tip...</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// --- LOGIC SCRIPT (Updated for Theme) ---
+
+let food = 0, shopping = 0, stay = 0, travel = 0, activities = 0;
+let estimatedBudget = 0;
+let currentTravelerType = "solo";
+let travelerCount = 1;
+let selectedDestination = null;
+let budgetChart = null;
+
+const travelerTypeRates = {
+    solo: { base: 2800, multiplier: 1.2 },
+    family: { base: 1800, multiplier: 0.9 },
+    friends: { base: 2200, multiplier: 1.0 }
+};
+
+const destinationSuggestions = {
+    solo: [
+        { id: "goa", name: "Goa", icon: "fas fa-umbrella-beach", description: "Chill Vibes", budgetRange: "₹25k - 40k", perPerson: "25000", reason: "Social & Fun" },
+        { id: "rishikesh", name: "Rishikesh", icon: "fas fa-mountain", description: "Adventure", budgetRange: "₹20k - 35k", perPerson: "20000", reason: "Rafting & Yoga" },
+        { id: "pondicherry", name: "Pondicherry", icon: "fas fa-bicycle", description: "French Style", budgetRange: "₹22k - 38k", perPerson: "22000", reason: "Safe & Scenic" }
+    ],
+    family: [
+        { id: "kerala", name: "Kerala", icon: "fas fa-ship", description: "Houseboats", budgetRange: "₹35k - 60k", perPerson: "15000", reason: "Relaxing" },
+        { id: "mysore", name: "Mysore", icon: "fas fa-landmark", description: "Heritage", budgetRange: "₹30k - 50k", perPerson: "12000", reason: "Educational" },
+        { id: "shimla", name: "Shimla", icon: "fas fa-snowflake", description: "Hill Station", budgetRange: "₹40k - 65k", perPerson: "16000", reason: " scenic" }
+    ],
+    friends: [
+        { id: "manali", name: "Manali", icon: "fas fa-hiking", description: "Trekking", budgetRange: "₹30k - 50k", perPerson: "15000", reason: "Thrilling" },
+        { id: "kasol", name: "Kasol", icon: "fas fa-campground", description: "Camping", budgetRange: "₹20k - 35k", perPerson: "10000", reason: "Budget Friendly" },
+        { id: "ladakh", name: "Ladakh", icon: "fas fa-motorcycle", description: "Bike Trip", budgetRange: "₹45k - 70k", perPerson: "25000", reason: "The Ultimate Trip" }
+    ]
+};
+
+const travelerTips = {
+    solo: "Stay in hostels to meet people and save big on accommodation!",
+    family: "Book suites or apartments instead of multiple rooms to save money.",
+    friends: "Pool money for transport and bulk bookings to get group discounts."
+};
+
+// --- INITIALIZATION ---
+window.onload = function() {
+    document.querySelectorAll('.traveler-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('.traveler-btn').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            currentTravelerType = this.getAttribute('data-type');
+            
+            document.querySelectorAll('.traveler-count').forEach(c => c.classList.remove('active'));
+            document.getElementById(`${currentTravelerType}-count`).classList.add('active');
+            
+            updateEstimate();
+            updateTravelTip();
+            updateDestinationSuggestions();
+        });
+    });
+    
+    document.getElementById('familyMembers').addEventListener('input', updateEstimate);
+    document.getElementById('friendsCount').addEventListener('input', updateEstimate);
+    document.getElementById('duration').addEventListener('input', updateEstimate);
+    
+    updateEstimate();
+    updateTravelTip();
+    updateDestinationSuggestions();
+};
+
+function updateTravelerCount() {
+    switch(currentTravelerType) {
+        case "solo": travelerCount = 1; break;
+        case "family": travelerCount = parseInt(document.getElementById('familyMembers').value) || 4; break;
+        case "friends": travelerCount = parseInt(document.getElementById('friendsCount').value) || 3; break;
+    }
+}
+
+function updateEstimate() {
+    updateTravelerCount();
+    const duration = parseInt(document.getElementById('duration').value) || 5;
+    const rates = travelerTypeRates[currentTravelerType];
+    
+    let baseEstimate = rates.base * duration;
+    if (travelerCount > 1) {
+        const groupDiscount = Math.min(0.2, (travelerCount - 1) * 0.05);
+        baseEstimate *= (1 - groupDiscount);
+    }
+    baseEstimate *= rates.multiplier;
+    estimatedBudget = Math.round(baseEstimate * travelerCount);
+    
+    document.getElementById('estimateAmount').textContent = `₹ ${estimatedBudget.toLocaleString()}`;
+    
+    let details = `Based on ${currentTravelerType}`;
+    if (currentTravelerType !== "solo") details += ` (${travelerCount} pax)`;
+    details += ` for ${duration} days`;
+    document.getElementById('estimateDetails').textContent = details;
+}
+
+function updateTravelTip() {
+    document.getElementById('tipText').textContent = travelerTips[currentTravelerType];
+}
+
+function updateDestinationSuggestions() {
+    const suggestions = destinationSuggestions[currentTravelerType];
+    const container = document.getElementById('destinationsGrid');
+    container.innerHTML = '';
+    
+    suggestions.forEach(destination => {
+        const card = document.createElement('div');
+        card.className = 'destination-card';
+        card.innerHTML = `
+            <div class="destination-icon"><i class="${destination.icon}"></i></div>
+            <h5>${destination.name}</h5>
+            <p>${destination.description}</p>
+            <p class="destination-price">${destination.budgetRange}</p>
+        `;
+        
+        card.addEventListener('click', function() {
+            document.querySelectorAll('.destination-card').forEach(c => c.classList.remove('selected'));
+            this.classList.add('selected');
+            selectedDestination = destination;
+            
+            // Recalculate Estimate based on selection
+            const perPerson = parseInt(destination.perPerson);
+            const duration = parseInt(document.getElementById('duration').value) || 5;
+            const adjusted = Math.round(perPerson * travelerCount * (duration/5));
+            document.getElementById('estimateAmount').textContent = `₹ ${adjusted.toLocaleString()}`;
+        });
+        container.appendChild(card);
+    });
+    document.getElementById('destinationSuggestions').style.display = 'block';
+}
+
+function generatePlan() {
+    const budget = Number(document.getElementById('budget').value);
+    const priority = document.getElementById('priority').value;
+    const duration = Number(document.getElementById('duration').value);
+    
+    if (!budget || !priority) {
+        alert("Please enter a Budget and Priority!");
+        return;
+    }
+    
+    // Logic similar to previous, simplified for brevity
+    let foodP = 0.2, shopP = 0.15, stayP = 0.3, travelP = 0.2, actP = 0.15;
+    
+    if(currentTravelerType === 'solo') { foodP=0.25; stayP=0.35; }
+    if(currentTravelerType === 'family') { stayP=0.4; actP=0.2; }
+    if(currentTravelerType === 'friends') { stayP=0.25; foodP=0.25; }
+    
+    food = budget * foodP;
+    shopping = budget * shopP;
+    stay = budget * stayP;
+    travel = budget * travelP;
+    activities = budget * actP;
+    
+    // Boost priority
+    const boost = budget * 0.1;
+    if(priority === 'food') food += boost;
+    if(priority === 'shopping') shopping += boost;
+    if(priority === 'stay') stay += boost;
+    if(priority === 'travel') travel += boost;
+    if(priority === 'activities') activities += boost;
+    
+    // Normalize
+    const total = food + shopping + stay + travel + activities;
+    const factor = budget / total;
+    food *= factor; shopping *= factor; stay *= factor; travel *= factor; activities *= factor;
+    
+    const tripType = getTripType(budget, estimatedBudget);
+    
+    const html = `
+        <div class="fade-in">
+            <span class="trip-type ${tripType.class}">${tripType.name}</span>
+            <h3 style="color:white; margin-bottom:10px;">${currentTravelerType.toUpperCase()} TRIP PLAN</h3>
+            <p style="color:#aaa; font-size:0.9rem;">Total: ₹${budget.toLocaleString()} for ${duration} days</p>
+            
+            <div class="budget-details">
+                <div class="budget-item"><div class="category"><i class="fas fa-utensils"></i> Food</div><div class="amount">₹${Math.round(food).toLocaleString()}</div></div>
+                <div class="budget-item"><div class="category"><i class="fas fa-shopping-bag"></i> Shop</div><div class="amount">₹${Math.round(shopping).toLocaleString()}</div></div>
+                <div class="budget-item"><div class="category"><i class="fas fa-bed"></i> Stay</div><div class="amount">₹${Math.round(stay).toLocaleString()}</div></div>
+                <div class="budget-item"><div class="category"><i class="fas fa-taxi"></i> Travel</div><div class="amount">₹${Math.round(travel).toLocaleString()}</div></div>
+                <div class="budget-item"><div class="category"><i class="fas fa-ticket-alt"></i> Fun</div><div class="amount">₹${Math.round(activities).toLocaleString()}</div></div>
+            </div>
+        </div>
+    `;
+    
+    document.getElementById('output').innerHTML = html;
+    document.getElementById('tipBox').style.display = 'flex';
+    createChart();
+}
+
+function getTripType(budget, estimate) {
+    if (budget < estimate * 0.8) return { name: "Budget Saver", class: "economy" };
+    if (budget > estimate * 1.5) return { name: "Luxury Experience", class: "premium" };
+    return { name: "Standard Trip", class: "standard" };
+}
+
+function createChart() {
+    const ctx = document.getElementById('budgetChart').getContext('2d');
+    if (budgetChart) budgetChart.destroy();
+    
+    // Chart colors matching Neon Theme
+    budgetChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Food', 'Shop', 'Stay', 'Travel', 'Fun'],
+            datasets: [{
+                data: [food, shopping, stay, travel, activities],
+                backgroundColor: ['#ff9f43', '#00ff55', '#2e86de', '#ff4757', '#a55eea'],
+                borderWidth: 0,
+                hoverOffset: 10
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { position: 'right', labels: { color: 'white', boxWidth: 12 } }
+            },
+            layout: { padding: 20 }
+        }
+    });
+}
+
+function downloadPDF() {
+    if (!food) { alert("Please generate a plan first!"); return; }
+    
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    
+    // Header (Theme Colors in PDF)
+    doc.setFillColor(15, 47, 31); // Dark Green
+    doc.rect(0, 0, 210, 40, 'F');
+    
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(22);
+    doc.text("TravelMate Budget Plan", 20, 25);
+    
+    doc.setFontSize(12);
+    doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 150, 25);
+    
+    // Content
+    doc.setTextColor(0, 0, 0);
+    let y = 60;
+    
+    doc.setFontSize(16);
+    doc.setTextColor(31, 111, 74); // Green Text
+    doc.text("Trip Summary", 20, y);
+    y+=10;
+    
+    doc.setFontSize(12);
+    doc.setTextColor(50, 50, 50);
+    doc.text(`Traveler: ${currentTravelerType.toUpperCase()} (${travelerCount} Pax)`, 20, y); y+=8;
+    doc.text(`Duration: ${document.getElementById('duration').value} Days`, 20, y); y+=8;
+    doc.text(`Total Budget: Rs. ${document.getElementById('budget').value}`, 20, y); y+=15;
+    
+    doc.setDrawColor(200);
+    doc.line(20, y, 190, y); y+=15;
+    
+    doc.setFontSize(16);
+    doc.setTextColor(31, 111, 74);
+    doc.text("Cost Breakdown", 20, y); y+=10;
+    
+    doc.setFontSize(12);
+    doc.setTextColor(0, 0, 0);
+    doc.text(`Food & Dining: Rs. ${Math.round(food)}`, 20, y); y+=8;
+    doc.text(`Shopping: Rs. ${Math.round(shopping)}`, 20, y); y+=8;
+    doc.text(`Accommodation: Rs. ${Math.round(stay)}`, 20, y); y+=8;
+    doc.text(`Local Travel: Rs. ${Math.round(travel)}`, 20, y); y+=8;
+    doc.text(`Activities: Rs. ${Math.round(activities)}`, 20, y); y+=15;
+    
+    if(selectedDestination) {
+        doc.line(20, y, 190, y); y+=15;
+        doc.setFontSize(14);
+        doc.text(`Recommended: ${selectedDestination.name}`, 20, y); y+=7;
+        doc.setFontSize(10);
+        doc.text(selectedDestination.description, 20, y);
+    }
+    
+    doc.save("TravelMate_Budget.pdf");
+}
+</script>
+
+</body>
+</html>
