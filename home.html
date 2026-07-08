@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Travel Planner</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Smart Travel Planner</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="hotels.html">Search Hotels</a></li>
+                <li><a href="todo.html">To-Do List</a></li>
+                <li><a href="budget.html">Budget Planner</a></li>
+                <li><a href="wonders.html">Seven Wonders</a></li>
+                <li><a href="login.html">Login</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <h2>Plan Your Perfect Trip!</h2>
+        <p>Find the best budget-friendly travel ideas, hotels, and explore the world's wonders.</p>
+        <button id="startPlanning">Start Planning</button>
+    </section>
+
+    <section class="features">
+        <div class="feature">
+            <img src="images/hotel.jpg" alt="Hotel Search">
+            <h3>Find the Best Hotels</h3>
+            <p>Search and compare hotels at your destination.</p>
+            <button onclick="window.location.href='hotels.html'">Search Hotels</button>
+        </div>
+        <div class="feature">
+            <img src="images/todo.jpg" alt="To-Do List">
+            <h3>Plan Your Activities</h3>
+            <p>Create a to-do list and plan your trip like a pro.</p>
+            <button onclick="window.location.href='todo.html'">View To-Do List</button>
+        </div>
+        <div class="feature">
+            <img src="images/budget.jpg" alt="Budget Planner">
+            <h3>Manage Your Budget</h3>
+            <p>Optimize your spending to enjoy the best experiences.</p>
+            <button onclick="window.location.href='budget.html'">Plan Budget</button>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2025 Smart Travel Planner. All rights reserved.</p>
+    </footer>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            alert("Welcome to Smart Travel Planner! Plan your perfect trip.");
+            
+            document.getElementById("startPlanning").addEventListener("click", function() {
+                window.location.href = "planner.html";
+            });
+        });
+    </script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+        header {
+            background: #007bff;
+            color: white;
+            padding: 15px 0;
+        }
+        nav ul {
+            list-style: none;
+            padding: 0;
+        }
+        nav ul li {
+            display: inline;
+            margin: 0 15px;
+        }
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .hero {
+            background: url('images/travel-banner.jpg') no-repeat center center/cover;
+            color: white;
+            padding: 50px 0;
+        }
+        .features {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 20px;
+        }
+        .feature {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            width: 250px;
+            text-align: center;
+        }
+        .feature img {
+            width: 100%;
+            border-radius: 10px;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+            margin-top: 10px;
+            border-radius: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        footer {
+            background: #333;
+            color: white;
+            padding: 10px;
+            margin-top: 20px;
+        }
+    </style>
+</body>
+</html>

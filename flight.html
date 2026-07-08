@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Check Flights</title>
+  <style>
+    /* ================= GLOBAL FIX ================= */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* ================= BODY ================= */
+body {
+  font-family: "Segoe UI", Arial, sans-serif;
+  background: linear-gradient(to bottom, #071f18, #0b2e24);
+  margin: 0;
+  padding: 0;
+  color: #cfeee4;
+}
+
+/* ================= BOX ================= */
+.box {
+  width: 420px;
+  max-width: calc(100% - 30px); /* mobile safe */
+  margin: 60px auto;
+  background: linear-gradient(145deg, #0b2e24, #114235);
+  padding: 26px;
+  border-radius: 18px;
+  box-shadow: 0 20px 45px rgba(0,0,0,0.65);
+}
+
+/* ================= HEADING ================= */
+.box h2 {
+  text-align: center;
+  margin: 0 0 18px;
+  color: #a8e6cf;
+  letter-spacing: 0.5px;
+}
+
+/* ================= INPUTS ================= */
+input {
+  width: 100%;
+  padding: 12px 14px;
+  margin: 8px 0;
+  border-radius: 10px;
+  border: none;
+  outline: none;
+  background: #071f18;
+  color: #cfeee4;
+  font-size: 15px;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.12);
+  display: block;
+}
+
+input::placeholder {
+  color: #9ccfc0;
+}
+
+/* ================= BUTTON ================= */
+button {
+  width: 100%;
+  padding: 14px;
+  margin-top: 14px;
+  background: linear-gradient(135deg, #3db083, #2e8b6f);
+  color: #051510;
+  border: none;
+  border-radius: 30px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 12px 28px rgba(61,176,131,0.6);
+  transition: all 0.3s ease;
+}
+
+button:hover {
+  transform: scale(1.04);
+  box-shadow: 0 20px 45px rgba(61,176,131,0.85);
+  background: linear-gradient(135deg, #7fffd4, #3db083);
+}
+
+/* ================= RESULTS ================= */
+#result h3 {
+  margin: 22px 0 10px;
+  text-align: center;
+  color: #a8e6cf;
+}
+
+.flight {
+  background: linear-gradient(145deg, #0f3d2f, #14503e);
+  padding: 14px;
+  margin-top: 14px;
+  border-radius: 14px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.flight b {
+  color: #9ff0cf;
+}
+
+/* ================= FOOTNOTE ================= */
+#result p {
+  margin-top: 15px;
+  font-size: 12px;
+  color: #9ccfc0 !important;
+  text-align: center;
+}
+
+  </style>
+</head>
+
+<body>
+
+<div class="box">
+  <h2>Check Flights</h2>
+
+  <input type="text" id="from" placeholder="From (e.g. Delhi)">
+  <input type="text" id="to" placeholder="To (e.g. Mumbai)">
+  <input type="date" id="date">
+
+  <button onclick="searchFlights()">Search Flights</button>
+
+  <div id="result"></div>
+</div>
+
+<script>
+function searchFlights() {
+  const from = document.getElementById("from").value;
+  const to = document.getElementById("to").value;
+  const date = document.getElementById("date").value;
+
+  if (!from || !to || !date) {
+    alert("Please fill all fields");
+    return;
+  }
+
+  // DEMO FLIGHT RESULTS (RELIABLE)
+  document.getElementById("result").innerHTML = `
+    <h3>Available Flights</h3>
+
+    <div class="flight">
+      <b>IndiGo</b><br>
+      ${from} → ${to}<br>
+      Departure: 06:30 AM<br>
+      Arrival: 08:45 AM<br>
+      Price: Rs. 5,899
+    </div>
+
+    <div class="flight">
+      <b>Air India</b><br>
+      ${from} → ${to}<br>
+      Departure: 09:15 AM<br>
+      Arrival: 11:30 AM<br>
+      Price: Rs. 6,450
+    </div>
+
+    <div class="flight">
+      <b>Vistara</b><br>
+      ${from} → ${to}<br>
+      Departure: 02:00 PM<br>
+      Arrival: 04:10 PM<br>
+      Price: Rs. 7,200
+    </div>
+
+    <p style="font-size:12px;color:gray;">
+      *Flight data shown for demo purposes.
+    </p>
+  `;
+}
+</script>
+
+</body>
+</html>

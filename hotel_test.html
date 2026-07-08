@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hotel Finder</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <!-- Azure Maps CSS -->
+    <link
+      rel="stylesheet"
+      href="https://atlas.microsoft.com/sdk/javascript/mapcontrol/2/atlas.min.css"
+      type="text/css"
+    />
+    <!-- Azure Maps SDK -->
+    <script src="https://atlas.microsoft.com/sdk/javascript/mapcontrol/2/atlas.min.js"></script>
+    <style>
+      
+      /* ================= GLOBAL RESET ================= */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* ================= BODY ================= */
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(to bottom, #071f18, #0b2e24);
+  color: #cfeee4;
+}
+
+/* ================= NAV ================= */
+.nav {
+  display: flex;
+  justify-content: center;
+  background: linear-gradient(to right, #0f3d2f, #14503e);
+  padding: 12px;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.6);
+}
+
+.navanchor {
+  background: linear-gradient(145deg, #0b2e24, #114235);
+  padding: 14px 30px;
+  border-radius: 30px;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08);
+}
+
+.nav a {
+  margin: 0 15px;
+  color: #9ff0cf;
+  text-decoration: none;
+  font-size: 18px;
+  font-weight: 700;
+  transition: 0.3s;
+}
+
+.nav a:hover {
+  color: #ffffff;
+  transform: scale(1.08);
+}
+
+/* ================= HEADER ================= */
+header {
+  background: linear-gradient(to right, #0b2e24, #114235);
+  color: #e6fff7;
+  padding: 28px 0;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.7);
+}
+
+h1 {
+  margin: 0;
+  font-size: 30px;
+  letter-spacing: 1px;
+}
+
+/* ================= CONTAINER ================= */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 30px 20px;
+}
+
+/* ================= SEARCH ================= */
+.search-container {
+  background: linear-gradient(145deg, #0b2e24, #114235);
+  padding: 26px;
+  border-radius: 18px;
+  box-shadow: 0 18px 40px rgba(0,0,0,0.65);
+  margin-bottom: 30px;
+}
+
+.search-form {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* ================= INPUT ================= */
+input[type="text"] {
+  flex: 1;
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: none;
+  outline: none;
+  background: #071f18;
+  color: #cfeee4;
+  font-size: 15px;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.12);
+}
+
+input::placeholder {
+  color: #9ccfc0;
+}
+
+/* ================= BUTTON ================= */
+button {
+  background: linear-gradient(135deg, #3db083, #2e8b6f);
+  color: #051510;
+  border: none;
+  padding: 14px 22px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  transition: 0.3s;
+  box-shadow: 0 12px 28px rgba(61,176,131,0.6);
+}
+
+button:hover {
+  background: linear-gradient(135deg, #7fffd4, #3db083);
+  transform: scale(1.05);
+}
+
+/* ================= RESULTS ================= */
+.results-container {
+  display: flex;
+  gap: 22px;
+}
+
+.map-container {
+  flex: 1;
+  height: 600px;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 18px 40px rgba(0,0,0,0.75);
+}
+
+.hotels-list {
+  flex: 1;
+  background: linear-gradient(145deg, #0b2e24, #114235);
+  border-radius: 18px;
+  padding: 22px;
+  box-shadow: 0 18px 40px rgba(0,0,0,0.75);
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+/* ================= HOTEL ITEM ================= */
+.hotel-item {
+  padding: 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  cursor: pointer;
+  transition: background 0.25s;
+}
+
+.hotel-item:hover {
+  background: rgba(255,255,255,0.05);
+}
+
+.hotel-name {
+  font-weight: bold;
+  font-size: 18px;
+  color: #a8e6cf;
+}
+
+.hotel-address {
+  color: #cfeee4;
+  font-size: 14px;
+  margin-top: 3px;
+}
+
+.hotel-rating {
+  color: #ffd166;
+  margin-top: 6px;
+}
+
+/* ================= STATES ================= */
+.loading,
+.no-results {
+  text-align: center;
+  padding: 20px;
+  color: #9ccfc0;
+}
+
+.error-message {
+  background: #3b1111;
+  color: #ffb4b4;
+  padding: 12px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+
+/* ================= MOBILE ================= */
+@media (max-width: 768px) {
+  .results-container {
+    flex-direction: column;
+  }
+
+  .map-container {
+    height: 320px;
+  }
+
+  h1 {
+    font-size: 22px;
+  }
+}
+
+    </style>
+  </head>
+  <body>
+    <div class="nav">
+      <div class="navanchor"
+          style="background-color: #ffd595;margin-left: 45px;     padding-left:20px;padding-right:20px;padding-top: 15px;padding-bottom: 15px;border-radius:25px;box-shadow:0px 2px 2px 2px #f08b11ed;">
+          <a href="originalpage.html">Home</a>
+          <a href="aboutusmain.html">About Us</a>
+          <a href="#booking">Booking</a>
+          <a href="contactus.html">Contact Us</a>
+      </div>
+  </div>
+    <header>
+      <div class="container">
+        <h1><i class="fas fa-hotel"></i> Hotel Finder</h1>
+      </div>
+    </header>
+
+    <div class="container">
+      <div class="search-container">
+        <div class="error-message" id="errorMessage"></div>
+        <form class="search-form" id="searchForm">
+          <input
+            type="text"
+            id="cityInput"
+            placeholder="Enter city name (e.g., Seattle, London, Tokyo)"
+            required
+          />
+          <button type="submit">
+            <i class="fas fa-search"></i> Find Hotels
+          </button>
+        </form>
+      </div>
+
+      <div class="loading" id="loading">
+        <i class="fas fa-spinner fa-spin"></i> Searching for hotels...
+      </div>
+
+      <div class="no-results" id="noResults">
+        No hotels found in this location. Please try another city.
+      </div>
+
+      <div class="results-container">
+        <div class="map-container" id="map"></div>
+        <div class="hotels-list" id="hotelsList"></div>
+      </div>
+    </div>
+
+    <script>
+      
+      const clientId = "70e24ba3-c78e-4434-a766-d157ace5f2bc";
+      const primaryKey =
+        "WJodrHtbnqwjOSOEp2uImvLKH0UFdz0t0gaGrrhDeNPPOudhcqdiJQQJ99CAACYeBjFLnVvHAAAgAZMP2lWJ";
+
+    
+      let map;
+     
+      let datasource;
+     
+      let currentHotels = [];
+
+     
+      window.onload = function () {
+        initializeMap();
+        document
+          .getElementById("searchForm")
+          .addEventListener("submit", handleSearch);
+      };
+
+      function initializeMap() {
+       
+        map = new atlas.Map("map", {
+          center: [-122.33, 47.6], 
+          zoom: 12,
+          view: "Auto",
+          authOptions: {
+            authType: "subscriptionKey",
+            subscriptionKey: primaryKey,
+          },
+        });
+
+       
+        map.events.add("ready", function () {
+          
+          map.controls.add(new atlas.control.ZoomControl(), {
+            position: "top-right",
+          });
+
+        
+          datasource = new atlas.source.DataSource();
+          map.sources.add(datasource);
+
+         
+          map.layers.add(
+            new atlas.layer.SymbolLayer(datasource, null, {
+              iconOptions: {
+                image: "marker-red",
+                anchor: "bottom",
+                allowOverlap: true,
+              },
+            })
+          );
+
+        
+          const popup = new atlas.Popup({
+            pixelOffset: [0, -30],
+            closeButton: true,
+          });
+
+   
+          map.events.add("click", map.layers[0], (e) => {
+            if (e.shapes && e.shapes.length > 0) {
+              const properties = e.shapes[0].getProperties();
+
+            
+              const content = `
+                            <div style="padding: 10px;">
+                                <strong>${properties.name}</strong><br>
+                                ${properties.address || ""}
+                            </div>
+                        `;
+
+              popup.setOptions({
+                content: content,
+                position: e.shapes[0].getCoordinates(),
+              });
+
+              popup.open(map);
+            }
+          });
+        });
+      }
+
+      async function handleSearch(e) {
+        e.preventDefault();
+
+        const cityName = document.getElementById("cityInput").value.trim();
+        if (!cityName) return;
+
+       
+        document.getElementById("loading").style.display = "block";
+        document.getElementById("errorMessage").style.display = "none";
+        document.getElementById("noResults").style.display = "none";
+        document.getElementById("hotelsList").innerHTML = "";
+
+        try {
+         
+          const locationResponse = await searchLocation(cityName);
+
+          if (
+            !locationResponse ||
+            !locationResponse.results ||
+            locationResponse.results.length === 0
+          ) {
+            throw new Error("City not found. Please try another location.");
+          }
+
+          const cityCoordinates = locationResponse.results[0].position;
+
+         
+          const hotelsResponse = await searchHotels(
+            cityCoordinates.lat,
+            cityCoordinates.lon
+          );
+
+    
+          updateMap(cityCoordinates, hotelsResponse);
+        } catch (error) {
+          console.error("Error:", error);
+          document.getElementById("errorMessage").textContent =
+            error.message || "An error occurred. Please try again.";
+          document.getElementById("errorMessage").style.display = "block";
+        } finally {
+          document.getElementById("loading").style.display = "none";
+        }
+      }
+
+      async function searchLocation(query) {
+        const url = `https://atlas.microsoft.com/search/address/json?api-version=1.0&subscription-key=${primaryKey}&query=${encodeURIComponent(
+          query
+        )}`;
+
+        const response = await fetch(url);
+        if (!response.ok) {
+          throw new Error(`Failed to find location: ${response.statusText}`);
+        }
+
+        return await response.json();
+      }
+
+      async function searchHotels(lat, lon) {
+        const url = `https://atlas.microsoft.com/search/poi/json?api-version=1.0&subscription-key=${primaryKey}&query=hotel&limit=50&lat=${lat}&lon=${lon}&radius=10000`;
+
+        const response = await fetch(url);
+        if (!response.ok) {
+          throw new Error(`Failed to find hotels: ${response.statusText}`);
+        }
+
+        return await response.json();
+      }
+
+      function updateMap(cityCoordinates, hotelsData) {
+      
+        datasource.clear();
+        currentHotels = [];
+
+       
+        if (!hotelsData.results || hotelsData.results.length === 0) {
+          document.getElementById("noResults").style.display = "block";
+          return;
+        }
+
+        
+        map.setCamera({
+          center: [cityCoordinates.lon, cityCoordinates.lat],
+          zoom: 12,
+        });
+
+   
+        hotelsData.results.forEach((hotel, index) => {
+        
+          currentHotels.push(hotel);
+
+         
+          datasource.add(
+            new atlas.data.Feature(
+              new atlas.data.Point([hotel.position.lon, hotel.position.lat]),
+              {
+                id: index,
+                name: hotel.poi.name,
+                address: hotel.address.freeformAddress,
+              }
+            )
+          );
+
+         
+          addHotelToList(hotel, index);
+        });
+      }
+
+      function addHotelToList(hotel, index) {
+        const hotelsList = document.getElementById("hotelsList");
+
+        const hotelElement = document.createElement("div");
+        hotelElement.className = "hotel-item";
+        hotelElement.dataset.index = index;
+
+       
+        const rating = Math.floor(Math.random() * 3) + 3; 
+        let stars = "";
+        for (let i = 0; i < rating; i++) {
+          stars += '<i class="fas fa-star"></i>';
+        }
+
+        hotelElement.innerHTML = `
+                <div class="hotel-name">${hotel.poi.name}</div>
+                <div class="hotel-address">${
+                  hotel.address.freeformAddress || "No address available"
+                }</div>
+                <div class="hotel-rating">${stars}</div>
+            `;
+
+        
+        hotelElement.addEventListener("click", () => {
+        
+          map.setCamera({
+            center: [hotel.position.lon, hotel.position.lat],
+            zoom: 15,
+          });
+        });
+
+        hotelsList.appendChild(hotelElement);
+      }
+    </script>
+  </body>
+</html>

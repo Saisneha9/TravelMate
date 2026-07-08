@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Welcome Button</title>
+</head>
+<body>
+
+<input type="email" id="email" placeholder="Enter your email" required />
+<button onclick="sendWelcome()">Click Me</button>
+
+<script>
+function sendWelcome() {
+  const email = document.getElementById("email").value;
+
+  fetch("https://sneha-9.app.n8n.cloud/webhook/hi-welcome", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      email: email
+    })
+  })
+  .then(() => alert("Button clicked, request sent!"))
+  .catch(() => alert("Error sending request"));
+}
+</script>
+
+</body>
+</html>
